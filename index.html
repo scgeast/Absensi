@@ -48,13 +48,13 @@
         }
         
         .header-title {
-            font-size: 2.5rem;
+            font-size: 1.8rem; /* Ukuran lebih kecil */
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(166, 177, 232, 0.5);
             margin: 0;
-        }
+        }        
         
         .header-subtitle {
             font-size: 1rem;
@@ -127,7 +127,7 @@
         
         .tab-content {
             padding: 20px;
-            background-color: white;
+            background-color: #ffffff; /* Memastikan putbacih bersih */
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             min-height: 300px;
@@ -256,7 +256,9 @@
         
         .overtime-table th {
             font-size: 0.9rem;
-            white-space: nowrap;
+            white-space: normal; /* Mengizinkan teks patah baris */
+            word-wrap: break-word; /* Memastikan kata panjang dipotong */
+            padding: 8px; /* Opsional: menambah padding agar teks tidak terlalu rapat */
         }
         
         .btn-delete {
@@ -329,7 +331,7 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.2s ease-out;
-            background-color: white;
+            background-color: #ffffff; /* Memastikan putih bersih */
             border-radius: 0 0 5px 5px;
         }
         
