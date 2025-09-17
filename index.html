@@ -1,1 +1,791 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Absensi Karyawan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        
+        label {
+            font-weight: 600;
+        }
+        
+        input[type="date"], select {
+            padding: 8px 12px;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #1565c0;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #bbdefb;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .tab.active {
+            background: white;
+            border-top: 3px solid #1e88e5;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #e3f2fd;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+        }
+        
+        th:hover {
+            background-color: #c5e1ff;
+        }
+        
+        .sort-icon {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        input[type="time"], select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #1e88e5;
+        }
+        
+        .btn-success {
+            background: #43a047;
+        }
+        
+        .btn-danger {
+            background: #e53935;
+        }
+        
+        .lembur {
+            background-color: #ffebee;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #e3f2fd;
+            color: #546e7a;
+            font-size: 14px;
+        }
+        
+        .pic-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calendar-check"></i> Program Absensi Karyawan</h1>
+            <p class="description">Sistem pengelolaan absensi bulanan untuk karyawan</p>
+        </header>
+        
+        <div class="filter-section">
+            <div class="filter-group">
+                <label for="startDate">Periode Awal:</label>
+                <input type="date" id="startDate">
+            </div>
+            
+            <div class="filter-group">
+                <label for="endDate">Periode Akhir:</label>
+                <input type="date" id="endDate">
+            </div>
+            
+            <div class="filter-group">
+                <button onclick="filterByDate()"><i class="fas fa-filter"></i> Filter</button>
+                <button onclick="resetFilter()"><i class="fas fa-sync"></i> Reset</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Entry Absensi</div>
+            <div class="tab" onclick="switchTab(1)">Output Entry</div>
+            <div class="tab" onclick="switchTab(2)">Aktual & Lembur</div>
+        </div>
+        
+        <div class="tab-content active" id="tab1">
+            <h2><i class="fas fa-edit"></i> Entry Jadwal Absensi</h2>
+            <div class="table-container">
+                <table id="entryTable">
+                    <thead>
+                        <tr>
+                            <th>Nama Karyawan</th>
+                            <th>Jabatan</th>
+                            <th>Tanggal</th>
+                            <th>Shift</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Tidak Masuk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="saveData()"><i class="fas fa-save"></i> Simpan Data</button>
+                <button class="btn-success" onclick="exportToExcel('entryTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab2">
+            <h2><i class="fas fa-list-alt"></i> Output Entry Absensi</h2>
+            <div class="table-container">
+                <table id="outputTable">
+                    <thead>
+                        <tr>
+                            <th>Nama Karyawan</th>
+                            <th>Jabatan</th>
+                            <th>Tanggal</th>
+                            <th>Shift</th>
+                            <th>Jam Kerja</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-group">
+                <button class="btn-success" onclick="exportToExcel('outputTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab3">
+            <h2><i class="fas fa-clock"></i> Aktual & Perhitungan Lembur</h2>
+            
+            <div class="pic-filter">
+                <label for="picFilter">Filter PIC:</label>
+                <select id="picFilter" onchange="filterByPIC()">
+                    <option value="all">Select All</option>
+                    <!-- Options akan diisi oleh JavaScript -->
+                </select>
+            </div>
+            
+            <div class="table-container">
+                <table id="aktualTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0, 'aktualTable')">Nama Karyawan <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(1, 'aktualTable')">Jabatan <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(2, 'aktualTable')">Tanggal <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(3, 'aktualTable')">Shift <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(4, 'aktualTable')">Jam Kerja <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(5, 'aktualTable')">Actual Check In <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(6, 'aktualTable')">Actual Check Out <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(7, 'aktualTable')">Lembur (Jam) <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(8, 'aktualTable')">Rekap PIC <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(9, 'aktualTable')">Cek RMC <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(10, 'aktualTable')">Remarks <i class="fas fa-sort sort-icon"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="calculateOvertime()"><i class="fas fa-calculator"></i> Hitung Lembur</button>
+                <button class="btn-success" onclick="exportToExcel('aktualTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 Program Absensi Karyawan - Divisi Logistik</p>
+        </div>
+    </div>
+
+    <script>
+        // Data karyawan
+        const karyawan = [
+            { id: 1, nama: "Agung setyawan", jabatan: "Dispatcher" },
+            { id: 2, nama: "Drajat Triono", jabatan: "Dispatcher" },
+            { id: 3, nama: "Fahmi Ardiansyah", jabatan: "Dispatcher" },
+            { id: 4, nama: "Wiyanto", jabatan: "Dispatcher" },
+            { id: 5, nama: "NurFauziah", jabatan: "Booking" }
+        ];
+
+        // Jam kerja berdasarkan jabatan dan shift
+        const jamKerja = {
+            "Dispatcher": {
+                "Pagi": { start: "07:00", end: "15:00" },
+                "Siang": { start: "15:00", end: "23:00" },
+                "Pjk pagi": { start: "07:00", end: "13:00" },
+                "Pjk siang": { start: "15:00", end: "20:00" },
+                "Malam": { start: "23:00", end: "07:00" },
+                "Off": { start: "-", end: "-" }
+            },
+            "Booking": {
+                "Pagi": { start: "08:00", end: "16:00" },
+                "Pjk pagi": { start: "08:00", end: "13:00" },
+                "Off": { start: "-", end: "-" }
+            }
+        };
+
+        let absensiData = JSON.parse(localStorage.getItem('absensiData')) || [];
+        let currentStartDate = new Date();
+        let currentEndDate = new Date();
+        currentEndDate.setDate(currentEndDate.getDate() + 30);
+        
+        // Variabel untuk sorting
+        let currentSortColumn = -1;
+        let currentSortDirection = {};
+
+        // Inisialisasi tanggal
+        document.getElementById('startDate').valueAsDate = currentStartDate;
+        document.getElementById('endDate').valueAsDate = currentEndDate;
+
+        // Fungsi untuk beralih tab
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === tabIndex);
+            });
+            
+            document.querySelectorAll('.tab-content').forEach((content, index) => {
+                content.classList.toggle('active', index === tabIndex);
+            });
+            
+            if (tabIndex === 1) {
+                generateOutputTable();
+            } else if (tabIndex === 2) {
+                generateAktualTable();
+                populatePICFilter();
+            }
+        }
+
+        // Fungsi untuk memfilter berdasarkan tanggal
+        function filterByDate() {
+            currentStartDate = new Date(document.getElementById('startDate').value);
+            currentEndDate = new Date(document.getElementById('endDate').value);
+            generateEntryTable();
+        }
+
+        // Fungsi untuk reset filter
+        function resetFilter() {
+            currentStartDate = new Date();
+            currentEndDate = new Date();
+            currentEndDate.setDate(currentEndDate.getDate() + 30);
+            
+            document.getElementById('startDate').valueAsDate = currentStartDate;
+            document.getElementById('endDate').valueAsDate = currentEndDate;
+            
+            generateEntryTable();
+        }
+
+        // Fungsi untuk menghasilkan tabel entry
+        function generateEntryTable() {
+            const tableBody = document.querySelector('#entryTable tbody');
+            tableBody.innerHTML = '';
+            
+            // Generate dates between start and end
+            const dates = [];
+            let currentDate = new Date(currentStartDate);
+            
+            while (currentDate <= currentEndDate) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Generate table rows
+            karyawan.forEach(emp => {
+                dates.forEach(date => {
+                    const dateStr = formatDate(date);
+                    const existingData = absensiData.find(a => 
+                        a.karyawanId === emp.id && a.tanggal === dateStr
+                    );
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${emp.nama}</td>
+                        <td>${emp.jabatan}</td>
+                        <td>${formatDateDisplay(date)}</td>
+                        <td>
+                            <select id="shift-${emp.id}-${dateStr}">
+                                ${generateShiftOptions(emp.jabatan, existingData?.shift)}
+                            </select>
+                        </td>
+                        <td><input type="time" id="checkin-${emp.id}-${dateStr}" value="${existingData?.checkIn || ''}"></td>
+                        <td><input type="time" id="checkout-${emp.id}-${dateStr}" value="${existingData?.checkOut || ''}"></td>
+                        <td style="text-align: center;">
+                            <input type="checkbox" id="absent-${emp.id}-${dateStr}" ${existingData?.absent ? 'checked' : ''}>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+        }
+
+        // Fungsi untuk menghasilkan opsi shift berdasarkan jabatan
+        function generateShiftOptions(jabatan, selectedShift) {
+            let options = '<option value="">Pilih Shift</option>';
+            for (const shift in jamKerja[jabatan]) {
+                options += `<option value="${shift}" ${shift === selectedShift ? 'selected' : ''}>${shift}</option>`;
+            }
+            return options;
+        }
+
+        // Fungsi untuk menyimpan data
+        function saveData() {
+            const dates = [];
+            let currentDate = new Date(currentStartDate);
+            
+            while (currentDate <= currentEndDate) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            dates.forEach(date => {
+                const dateStr = formatDate(date);
+                
+                karyawan.forEach(emp => {
+                    const shift = document.getElementById(`shift-${emp.id}-${dateStr}`).value;
+                    const checkIn = document.getElementById(`checkin-${emp.id}-${dateStr}`).value;
+                    const checkOut = document.getElementById(`checkout-${emp.id}-${dateStr}`).value;
+                    const absent = document.getElementById(`absent-${emp.id}-${dateStr}`).checked;
+                    
+                    // Cari data yang sudah ada atau buat baru
+                    const existingIndex = absensiData.findIndex(a => 
+                        a.karyawanId === emp.id && a.tanggal === dateStr
+                    );
+                    
+                    if (existingIndex !== -1) {
+                        absensiData[existingIndex] = {
+                            ...absensiData[existingIndex],
+                            shift,
+                            checkIn,
+                            checkOut,
+                            absent
+                        };
+                    } else {
+                        absensiData.push({
+                            karyawanId: emp.id,
+                            nama: emp.nama,
+                            jabatan: emp.jabatan,
+                            tanggal: dateStr,
+                            shift,
+                            checkIn,
+                            checkOut,
+                            absent
+                        });
+                    }
+                });
+            });
+            
+            localStorage.setItem('absensiData', JSON.stringify(absensiData));
+            alert('Data berhasil disimpan!');
+        }
+
+        // Fungsi untuk menghasilkan tabel output
+        function generateOutputTable() {
+            const tableBody = document.querySelector('#outputTable tbody');
+            tableBody.innerHTML = '';
+            
+            const filteredData = absensiData.filter(a => {
+                const tanggal = new Date(a.tanggal);
+                return tanggal >= currentStartDate && tanggal <= currentEndDate;
+            });
+            
+            filteredData.forEach(data => {
+                const shiftInfo = jamKerja[data.jabatan][data.shift];
+                const jamKerjaText = shiftInfo ? `${shiftInfo.start} - ${shiftInfo.end}` : '-';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.nama}</td>
+                    <td>${data.jabatan}</td>
+                    <td>${formatDateDisplay(new Date(data.tanggal))}</td>
+                    <td>${data.shift || '-'}</td>
+                    <td>${jamKerjaText}</td>
+                    <td>${data.absent ? 'Tidak Masuk' : 'Masuk'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk menghasilkan tabel aktual
+        function generateAktualTable() {
+            const tableBody = document.querySelector('#aktualTable tbody');
+            tableBody.innerHTML = '';
+            
+            const filteredData = absensiData.filter(a => {
+                const tanggal = new Date(a.tanggal);
+                return tanggal >= currentStartDate && tanggal <= currentEndDate;
+            });
+            
+            filteredData.forEach(data => {
+                const shiftInfo = jamKerja[data.jabatan][data.shift];
+                const jamKerjaText = shiftInfo ? `${shiftInfo.start} - ${shiftInfo.end}` : '-';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.nama}</td>
+                    <td>${data.jabatan}</td>
+                    <td>${formatDateDisplay(new Date(data.tanggal))}</td>
+                    <td>${data.shift || '-'}</td>
+                    <td>${jamKerjaText}</td>
+                    <td><input type="time" id="actualIn-${data.karyawanId}-${data.tanggal}" value="${data.actualIn || ''}"></td>
+                    <td><input type="time" id="actualOut-${data.karyawanId}-${data.tanggal}" value="${data.actualOut || ''}"></td>
+                    <td id="lembur-${data.karyawanId}-${data.tanggal}">${data.lembur || '-'}</td>
+                    <td><input type="text" id="pic-${data.karyawanId}-${data.tanggal}" value="${data.pic || ''}"></td>
+                    <td><input type="text" id="rmc-${data.karyawanId}-${data.tanggal}" value="${data.rmc || ''}"></td>
+                    <td><input type="text" id="remarks-${data.karyawanId}-${data.tanggal}" value="${data.remarks || ''}"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk mengisi filter PIC
+        function populatePICFilter() {
+            const picFilter = document.getElementById('picFilter');
+            // Hapus opsi selain "Select All"
+            while (picFilter.options.length > 1) {
+                picFilter.remove(1);
+            }
+            
+            // Dapatkan daftar PIC unik dari data
+            const picList = [...new Set(absensiData.map(item => item.pic).filter(pic => pic))];
+            
+            // Tambahkan opsi untuk setiap PIC
+            picList.forEach(pic => {
+                const option = document.createElement('option');
+                option.value = pic;
+                option.textContent = pic;
+                picFilter.appendChild(option);
+            });
+        }
+
+        // Fungsi untuk memfilter berdasarkan PIC
+        function filterByPIC() {
+            const selectedPIC = document.getElementById('picFilter').value;
+            const tableBody = document.querySelector('#aktualTable tbody');
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const picInput = row.querySelector('td:nth-child(9) input');
+                const picValue = picInput ? picInput.value : '';
+                
+                if (selectedPIC === 'all' || picValue === selectedPIC) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Fungsi untuk menghitung lembur
+        function calculateOvertime() {
+            const filteredData = absensiData.filter(a => {
+                const tanggal = new Date(a.tanggal);
+                return tanggal >= currentStartDate && tanggal <= currentEndDate;
+            });
+            
+            filteredData.forEach(data => {
+                const actualOut = document.getElementById(`actualOut-${data.karyawanId}-${data.tanggal}`).value;
+                const shiftInfo = jamKerja[data.jabatan][data.shift];
+                
+                if (actualOut && shiftInfo && shiftInfo.end !== "-") {
+                    const actualOutTime = new Date(`2000-01-01T${actualOut}`);
+                    const shiftEndTime = new Date(`2000-01-01T${shiftInfo.end}`);
+                    
+                    // Jika shift malam (berakhir di hari berikutnya)
+                    if (data.shift === "Malam") {
+                        shiftEndTime.setDate(shiftEndTime.getDate() + 1);
+                    }
+                    
+                    let lembur = 0;
+                    if (actualOutTime > shiftEndTime) {
+                        lembur = (actualOutTime - shiftEndTime) / (1000 * 60 * 60); // dalam jam
+                    }
+                    
+                    document.getElementById(`lembur-${data.karyawanId}-${data.tanggal}`).textContent = lembur > 0 ? lembur.toFixed(2) : '-';
+                    
+                    // Simpan data actual dan lembur
+                    const existingIndex = absensiData.findIndex(a => 
+                        a.karyawanId === data.karyawanId && a.tanggal === data.tanggal
+                    );
+                    
+                    if (existingIndex !== -1) {
+                        absensiData[existingIndex].actualIn = document.getElementById(`actualIn-${data.karyawanId}-${data.tanggal}`).value;
+                        absensiData[existingIndex].actualOut = actualOut;
+                        absensiData[existingIndex].lembur = lembur > 0 ? lembur.toFixed(2) : '-';
+                        absensiData[existingIndex].pic = document.getElementById(`pic-${data.karyawanId}-${data.tanggal}`).value;
+                        absensiData[existingIndex].rmc = document.getElementById(`rmc-${data.karyawanId}-${data.tanggal}`).value;
+                        absensiData[existingIndex].remarks = document.getElementById(`remarks-${data.karyawanId}-${data.tanggal}`).value;
+                    }
+                }
+            });
+            
+            localStorage.setItem('absensiData', JSON.stringify(absensiData));
+            populatePICFilter(); // Perbarui filter PIC dengan data terbaru
+            alert('Perhitungan lembur selesai!');
+        }
+
+        // Fungsi untuk sorting tabel
+        function sortTable(columnIndex, tableId) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Tentukan arah sorting
+            if (!currentSortDirection[tableId]) currentSortDirection[tableId] = {};
+            const isAscending = currentSortColumn === columnIndex ? !currentSortDirection[tableId][columnIndex] : true;
+            currentSortDirection[tableId][columnIndex] = isAscending;
+            currentSortColumn = columnIndex;
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                // Ambil nilai dari sel yang sesuai
+                if (columnIndex === 7) { // Kolom Lembur (Jam)
+                    aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
+                    bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
+                } else if (columnIndex === 2) { // Kolom Tanggal
+                    aValue = new Date(a.cells[columnIndex].textContent);
+                    bValue = new Date(b.cells[columnIndex].textContent);
+                } else if (a.cells[columnIndex].querySelector('input')) {
+                    aValue = a.cells[columnIndex].querySelector('input').value.toLowerCase();
+                    bValue = b.cells[columnIndex].querySelector('input').value.toLowerCase();
+                } else {
+                    aValue = a.cells[columnIndex].textContent.toLowerCase();
+                    bValue = b.cells[columnIndex].textContent.toLowerCase();
+                }
+                
+                // Bandingkan nilai
+                if (aValue < bValue) return isAscending ? -1 : 1;
+                if (aValue > bValue) return isAscending ? 1 : -1;
+                return 0;
+            });
+            
+            // Hapus rows yang ada
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+            
+            // Tambahkan rows yang sudah diurutkan
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Perbarui icon sorting
+            table.querySelectorAll('th').forEach((th, index) => {
+                const icon = th.querySelector('.sort-icon');
+                if (icon) {
+                    if (index === columnIndex) {
+                        icon.className = isAscending ? 'fas fa-sort-up sort-icon' : 'fas fa-sort-down sort-icon';
+                    } else {
+                        icon.className = 'fas fa-sort sort-icon';
+                    }
+                }
+            });
+        }
+
+        // Fungsi untuk mengekspor ke Excel (format CSV)
+        function exportToExcel(tableId) {
+            let csvContent = "";
+            const table = document.getElementById(tableId);
+            
+            // Headers
+            const headers = [];
+            table.querySelectorAll('thead th').forEach(header => {
+                headers.push(header.textContent.replace(/<i.*?<\/i>/g, '').trim());
+            });
+            csvContent += headers.join(',') + '\n';
+            
+            // Rows
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    // Untuk input fields
+                    if (cell.querySelector('input')) {
+                        rowData.push(cell.querySelector('input').value);
+                    } 
+                    // Untuk select fields
+                    else if (cell.querySelector('select')) {
+                        rowData.push(cell.querySelector('select').value);
+                    }
+                    // Untuk regular cells
+                    else {
+                        rowData.push(cell.textContent);
+                    }
+                });
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `absensi_${tableId}_${formatDate(currentStartDate)}_${formatDate(currentEndDate)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Fungsi utilitas untuk memformat tanggal
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDateDisplay(date) {
+            return date.toLocaleDateString('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Inisialisasi tabel saat halaman dimuat
+        window.onload = function() {
+            generateEntryTable();
+            
+            // Inisialisasi arah sorting
+            currentSortDirection['aktualTable'] = {};
+        };
+    </script>
+</body>
+</html>
