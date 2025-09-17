@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -48,23 +47,28 @@
         }
         
         .filter-section {
-            display: flex;
-            justify-content: space-between;
             padding: 15px 20px;
             background: #e3f2fd;
             border-bottom: 1px solid #bbdefb;
+        }
+        
+        .filter-row {
+            display: flex;
             flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+            align-items: center;
         }
         
         .filter-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 5px 0;
         }
         
         label {
             font-weight: 600;
+            min-width: 100px;
         }
         
         input[type="date"], select {
@@ -163,8 +167,7 @@
         .btn-group {
             display: flex;
             gap: 10px;
-            margin: 20px 0;
-            justify-content: center;
+            margin: 10px 0;
         }
         
         .btn-primary {
@@ -192,16 +195,10 @@
             font-size: 14px;
         }
         
-        .pic-filter {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        
         @media (max-width: 768px) {
-            .filter-section {
+            .filter-row {
                 flex-direction: column;
+                align-items: flex-start;
             }
             
             .tab {
@@ -223,19 +220,34 @@
         </header>
         
         <div class="filter-section">
-            <div class="filter-group">
-                <label for="startDate">Periode Awal:</label>
-                <input type="date" id="startDate">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="dateRange">Periode:</label>
+                    <input type="date" id="startDate">
+                    <span>s/d</span>
+                    <input type="date" id="endDate">
+                </div>
+                
+                <div class="filter-group">
+                    <button onclick="filterData()"><i class="fas fa-filter"></i> Filter</button>
+                    <button onclick="resetFilter()"><i class="fas fa-sync"></i> Reset</button>
+                </div>
             </div>
             
-            <div class="filter-group">
-                <label for="endDate">Periode Akhir:</label>
-                <input type="date" id="endDate">
-            </div>
-            
-            <div class="filter-group">
-                <button onclick="filterByDate()"><i class="fas fa-filter"></i> Filter</button>
-                <button onclick="resetFilter()"><i class="fas fa-sync"></i> Reset</button>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="picFilter">PIC:</label>
+                    <select id="picFilter">
+                        <option value="all">Semua PIC</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="nameFilter">Nama:</label>
+                    <select id="nameFilter">
+                        <option value="all">Semua Karyawan</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -247,6 +259,10 @@
         
         <div class="tab-content active" id="tab1">
             <h2><i class="fas fa-edit"></i> Entry Jadwal Absensi</h2>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="saveData()"><i class="fas fa-save"></i> Simpan Data</button>
+                <button class="btn-success" onclick="exportToExcel('entryTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
+            </div>
             <div class="table-container">
                 <table id="entryTable">
                     <thead>
@@ -255,8 +271,6 @@
                             <th>Jabatan</th>
                             <th>Tanggal</th>
                             <th>Shift</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
                             <th>Tidak Masuk</th>
                         </tr>
                     </thead>
@@ -265,14 +279,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="btn-group">
-                <button class="btn-primary" onclick="saveData()"><i class="fas fa-save"></i> Simpan Data</button>
-                <button class="btn-success" onclick="exportToExcel('entryTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
-            </div>
         </div>
         
         <div class="tab-content" id="tab2">
             <h2><i class="fas fa-list-alt"></i> Output Entry Absensi</h2>
+            <div class="btn-group">
+                <button class="btn-success" onclick="exportToExcel('outputTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
+            </div>
             <div class="table-container">
                 <table id="outputTable">
                     <thead>
@@ -281,8 +294,8 @@
                             <th>Jabatan</th>
                             <th>Tanggal</th>
                             <th>Shift</th>
-                            <th>Jam Kerja</th>
-                            <th>Status</th>
+                            <th>Jam Check In</th>
+                            <th>Jam Check Out</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -290,22 +303,10 @@
                     </tbody>
                 </table>
             </div>
-            <div class="btn-group">
-                <button class="btn-success" onclick="exportToExcel('outputTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
-            </div>
         </div>
         
         <div class="tab-content" id="tab3">
             <h2><i class="fas fa-clock"></i> Aktual & Perhitungan Lembur</h2>
-            
-            <div class="pic-filter">
-                <label for="picFilter">Filter PIC:</label>
-                <select id="picFilter" onchange="filterByPIC()">
-                    <option value="all">Select All</option>
-                    <!-- Options akan diisi oleh JavaScript -->
-                </select>
-            </div>
-            
             <div class="table-container">
                 <table id="aktualTable">
                     <thead>
@@ -314,13 +315,14 @@
                             <th onclick="sortTable(1, 'aktualTable')">Jabatan <i class="fas fa-sort sort-icon"></i></th>
                             <th onclick="sortTable(2, 'aktualTable')">Tanggal <i class="fas fa-sort sort-icon"></i></th>
                             <th onclick="sortTable(3, 'aktualTable')">Shift <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(4, 'aktualTable')">Jam Kerja <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(5, 'aktualTable')">Actual Check In <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(6, 'aktualTable')">Actual Check Out <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(7, 'aktualTable')">Lembur (Jam) <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(8, 'aktualTable')">Rekap PIC <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(9, 'aktualTable')">Cek RMC <i class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(10, 'aktualTable')">Remarks <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(4, 'aktualTable')">Jam Check In</th>
+                            <th onclick="sortTable(5, 'aktualTable')">Jam Check Out</th>
+                            <th onclick="sortTable(6, 'aktualTable')">Actual Check In <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(7, 'aktualTable')">Actual Check Out <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(8, 'aktualTable')">Lembur (Jam) <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(9, 'aktualTable')">Rekap PIC <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(10, 'aktualTable')">Cek RMC <i class="fas fa-sort sort-icon"></i></th>
+                            <th onclick="sortTable(11, 'aktualTable')">Remarks <i class="fas fa-sort sort-icon"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -329,7 +331,6 @@
                 </table>
             </div>
             <div class="btn-group">
-                <button class="btn-primary" onclick="calculateOvertime()"><i class="fas fa-calculator"></i> Hitung Lembur</button>
                 <button class="btn-success" onclick="exportToExcel('aktualTable')"><i class="fas fa-file-excel"></i> Export ke Excel</button>
             </div>
         </div>
@@ -379,29 +380,66 @@
         document.getElementById('startDate').valueAsDate = currentStartDate;
         document.getElementById('endDate').valueAsDate = currentEndDate;
 
-        // Fungsi untuk beralih tab
-        function switchTab(tabIndex) {
-            document.querySelectorAll('.tab').forEach((tab, index) => {
-                tab.classList.toggle('active', index === tabIndex);
-            });
-            
-            document.querySelectorAll('.tab-content').forEach((content, index) => {
-                content.classList.toggle('active', index === tabIndex);
-            });
-            
-            if (tabIndex === 1) {
-                generateOutputTable();
-            } else if (tabIndex === 2) {
-                generateAktualTable();
-                populatePICFilter();
+        // Fungsi untuk mengisi filter nama
+        function populateNameFilter() {
+            const nameFilter = document.getElementById('nameFilter');
+            // Hapus opsi selain "Semua Karyawan"
+            while (nameFilter.options.length > 1) {
+                nameFilter.remove(1);
             }
+            
+            // Tambahkan opsi untuk setiap karyawan
+            karyawan.forEach(karyawan => {
+                const option = document.createElement('option');
+                option.value = karyawan.id;
+                option.textContent = karyawan.nama;
+                nameFilter.appendChild(option);
+            });
         }
 
-        // Fungsi untuk memfilter berdasarkan tanggal
-        function filterByDate() {
+        // Fungsi untuk mengisi filter PIC
+        function populatePICFilter() {
+            const picFilter = document.getElementById('picFilter');
+            // Hapus opsi selain "Semua PIC"
+            while (picFilter.options.length > 1) {
+                picFilter.remove(1);
+            }
+            
+            // Dapatkan daftar PIC unik dari data
+            const picList = [...new Set(absensiData.map(item => item.pic).filter(pic => pic))];
+            
+            // Tambahkan opsi untuk setiap PIC
+            picList.forEach(pic => {
+                const option = document.createElement('option');
+                option.value = pic;
+                option.textContent = pic;
+                picFilter.appendChild(option);
+            });
+        }
+
+        // Fungsi untuk memfilter data
+        function filterData() {
             currentStartDate = new Date(document.getElementById('startDate').value);
             currentEndDate = new Date(document.getElementById('endDate').value);
-            generateEntryTable();
+            
+            const selectedPIC = document.getElementById('picFilter').value;
+            const selectedName = document.getElementById('nameFilter').value;
+            
+            // Terapkan filter berdasarkan tab aktif
+            const activeTab = document.querySelector('.tab.active');
+            const tabIndex = Array.from(document.querySelectorAll('.tab')).indexOf(activeTab);
+            
+            switch(tabIndex) {
+                case 0:
+                    generateEntryTable();
+                    break;
+                case 1:
+                    generateOutputTable();
+                    break;
+                case 2:
+                    generateAktualTable();
+                    break;
+            }
         }
 
         // Fungsi untuk reset filter
@@ -412,14 +450,41 @@
             
             document.getElementById('startDate').valueAsDate = currentStartDate;
             document.getElementById('endDate').valueAsDate = currentEndDate;
+            document.getElementById('picFilter').value = 'all';
+            document.getElementById('nameFilter').value = 'all';
             
-            generateEntryTable();
+            filterData();
+        }
+
+        // Fungsi untuk beralih tab
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === tabIndex);
+            });
+            
+            document.querySelectorAll('.tab-content').forEach((content, index) => {
+                content.classList.toggle('active', index === tabIndex);
+            });
+            
+            if (tabIndex === 0) {
+                generateEntryTable();
+            } else if (tabIndex === 1) {
+                generateOutputTable();
+            } else if (tabIndex === 2) {
+                generateAktualTable();
+                populatePICFilter();
+            }
+            
+            // Perbarui filter nama setiap kali beralih tab
+            populateNameFilter();
         }
 
         // Fungsi untuk menghasilkan tabel entry
         function generateEntryTable() {
             const tableBody = document.querySelector('#entryTable tbody');
             tableBody.innerHTML = '';
+            
+            const selectedName = document.getElementById('nameFilter').value;
             
             // Generate dates between start and end
             const dates = [];
@@ -432,6 +497,9 @@
             
             // Generate table rows
             karyawan.forEach(emp => {
+                // Filter berdasarkan nama jika dipilih
+                if (selectedName !== 'all' && emp.id != selectedName) return;
+                
                 dates.forEach(date => {
                     const dateStr = formatDate(date);
                     const existingData = absensiData.find(a => 
@@ -448,8 +516,6 @@
                                 ${generateShiftOptions(emp.jabatan, existingData?.shift)}
                             </select>
                         </td>
-                        <td><input type="time" id="checkin-${emp.id}-${dateStr}" value="${existingData?.checkIn || ''}"></td>
-                        <td><input type="time" id="checkout-${emp.id}-${dateStr}" value="${existingData?.checkOut || ''}"></td>
                         <td style="text-align: center;">
                             <input type="checkbox" id="absent-${emp.id}-${dateStr}" ${existingData?.absent ? 'checked' : ''}>
                         </td>
@@ -483,8 +549,6 @@
                 
                 karyawan.forEach(emp => {
                     const shift = document.getElementById(`shift-${emp.id}-${dateStr}`).value;
-                    const checkIn = document.getElementById(`checkin-${emp.id}-${dateStr}`).value;
-                    const checkOut = document.getElementById(`checkout-${emp.id}-${dateStr}`).value;
                     const absent = document.getElementById(`absent-${emp.id}-${dateStr}`).checked;
                     
                     // Cari data yang sudah ada atau buat baru
@@ -496,8 +560,6 @@
                         absensiData[existingIndex] = {
                             ...absensiData[existingIndex],
                             shift,
-                            checkIn,
-                            checkOut,
                             absent
                         };
                     } else {
@@ -507,8 +569,6 @@
                             jabatan: emp.jabatan,
                             tanggal: dateStr,
                             shift,
-                            checkIn,
-                            checkOut,
                             absent
                         });
                     }
@@ -524,14 +584,20 @@
             const tableBody = document.querySelector('#outputTable tbody');
             tableBody.innerHTML = '';
             
+            const selectedPIC = document.getElementById('picFilter').value;
+            const selectedName = document.getElementById('nameFilter').value;
+            
             const filteredData = absensiData.filter(a => {
                 const tanggal = new Date(a.tanggal);
-                return tanggal >= currentStartDate && tanggal <= currentEndDate;
+                const picMatch = selectedPIC === 'all' || a.pic === selectedPIC;
+                const nameMatch = selectedName === 'all' || a.karyawanId == selectedName;
+                return tanggal >= currentStartDate && tanggal <= currentEndDate && picMatch && nameMatch;
             });
             
             filteredData.forEach(data => {
                 const shiftInfo = jamKerja[data.jabatan][data.shift];
-                const jamKerjaText = shiftInfo ? `${shiftInfo.start} - ${shiftInfo.end}` : '-';
+                const jamCheckIn = shiftInfo ? shiftInfo.start : '-';
+                const jamCheckOut = shiftInfo ? shiftInfo.end : '-';
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -539,8 +605,8 @@
                     <td>${data.jabatan}</td>
                     <td>${formatDateDisplay(new Date(data.tanggal))}</td>
                     <td>${data.shift || '-'}</td>
-                    <td>${jamKerjaText}</td>
-                    <td>${data.absent ? 'Tidak Masuk' : 'Masuk'}</td>
+                    <td>${jamCheckIn}</td>
+                    <td>${jamCheckOut}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -551,14 +617,20 @@
             const tableBody = document.querySelector('#aktualTable tbody');
             tableBody.innerHTML = '';
             
+            const selectedPIC = document.getElementById('picFilter').value;
+            const selectedName = document.getElementById('nameFilter').value;
+            
             const filteredData = absensiData.filter(a => {
                 const tanggal = new Date(a.tanggal);
-                return tanggal >= currentStartDate && tanggal <= currentEndDate;
+                const picMatch = selectedPIC === 'all' || a.pic === selectedPIC;
+                const nameMatch = selectedName === 'all' || a.karyawanId == selectedName;
+                return tanggal >= currentStartDate && tanggal <= currentEndDate && picMatch && nameMatch;
             });
             
             filteredData.forEach(data => {
                 const shiftInfo = jamKerja[data.jabatan][data.shift];
-                const jamKerjaText = shiftInfo ? `${shiftInfo.start} - ${shiftInfo.end}` : '-';
+                const jamCheckIn = shiftInfo ? shiftInfo.start : '-';
+                const jamCheckOut = shiftInfo ? shiftInfo.end : '-';
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -566,68 +638,51 @@
                     <td>${data.jabatan}</td>
                     <td>${formatDateDisplay(new Date(data.tanggal))}</td>
                     <td>${data.shift || '-'}</td>
-                    <td>${jamKerjaText}</td>
-                    <td><input type="time" id="actualIn-${data.karyawanId}-${data.tanggal}" value="${data.actualIn || ''}"></td>
-                    <td><input type="time" id="actualOut-${data.karyawanId}-${data.tanggal}" value="${data.actualOut || ''}"></td>
+                    <td>${jamCheckIn}</td>
+                    <td>${jamCheckOut}</td>
+                    <td><input type="time" id="actualIn-${data.karyawanId}-${data.tanggal}" value="${data.actualIn || ''}" onchange="saveAktualData()"></td>
+                    <td><input type="time" id="actualOut-${data.karyawanId}-${data.tanggal}" value="${data.actualOut || ''}" onchange="calculateOvertime(${data.karyawanId}, '${data.tanggal}')"></td>
                     <td id="lembur-${data.karyawanId}-${data.tanggal}">${data.lembur || '-'}</td>
-                    <td><input type="text" id="pic-${data.karyawanId}-${data.tanggal}" value="${data.pic || ''}"></td>
-                    <td><input type="text" id="rmc-${data.karyawanId}-${data.tanggal}" value="${data.rmc || ''}"></td>
-                    <td><input type="text" id="remarks-${data.karyawanId}-${data.tanggal}" value="${data.remarks || ''}"></td>
+                    <td id="pic-${data.karyawanId}-${data.tanggal}">${data.pic || ''}</td>
+                    <td><input type="text" id="rmc-${data.karyawanId}-${data.tanggal}" value="${data.rmc || ''}" onchange="saveAktualData()"></td>
+                    <td><input type="text" id="remarks-${data.karyawanId}-${data.tanggal}" value="${data.remarks || ''}" onchange="saveAktualData()"></td>
                 `;
                 tableBody.appendChild(row);
             });
         }
 
-        // Fungsi untuk mengisi filter PIC
-        function populatePICFilter() {
-            const picFilter = document.getElementById('picFilter');
-            // Hapus opsi selain "Select All"
-            while (picFilter.options.length > 1) {
-                picFilter.remove(1);
-            }
-            
-            // Dapatkan daftar PIC unik dari data
-            const picList = [...new Set(absensiData.map(item => item.pic).filter(pic => pic))];
-            
-            // Tambahkan opsi untuk setiap PIC
-            picList.forEach(pic => {
-                const option = document.createElement('option');
-                option.value = pic;
-                option.textContent = pic;
-                picFilter.appendChild(option);
-            });
-        }
-
-        // Fungsi untuk memfilter berdasarkan PIC
-        function filterByPIC() {
-            const selectedPIC = document.getElementById('picFilter').value;
-            const tableBody = document.querySelector('#aktualTable tbody');
-            const rows = tableBody.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const picInput = row.querySelector('td:nth-child(9) input');
-                const picValue = picInput ? picInput.value : '';
-                
-                if (selectedPIC === 'all' || picValue === selectedPIC) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // Fungsi untuk menghitung lembur
-        function calculateOvertime() {
+        // Fungsi untuk menyimpan data aktual
+        function saveAktualData() {
             const filteredData = absensiData.filter(a => {
                 const tanggal = new Date(a.tanggal);
                 return tanggal >= currentStartDate && tanggal <= currentEndDate;
             });
             
             filteredData.forEach(data => {
-                const actualOut = document.getElementById(`actualOut-${data.karyawanId}-${data.tanggal}`).value;
+                const existingIndex = absensiData.findIndex(a => 
+                    a.karyawanId === data.karyawanId && a.tanggal === data.tanggal
+                );
+                
+                if (existingIndex !== -1) {
+                    absensiData[existingIndex].actualIn = document.getElementById(`actualIn-${data.karyawanId}-${data.tanggal}`).value;
+                    absensiData[existingIndex].actualOut = document.getElementById(`actualOut-${data.karyawanId}-${data.tanggal}`).value;
+                    absensiData[existingIndex].rmc = document.getElementById(`rmc-${data.karyawanId}-${data.tanggal}`).value;
+                    absensiData[existingIndex].remarks = document.getElementById(`remarks-${data.karyawanId}-${data.tanggal}`).value;
+                }
+            });
+            
+            localStorage.setItem('absensiData', JSON.stringify(absensiData));
+        }
+
+        // Fungsi untuk menghitung lembur
+        function calculateOvertime(karyawanId, tanggal) {
+            const actualOut = document.getElementById(`actualOut-${karyawanId}-${tanggal}`).value;
+            const data = absensiData.find(a => a.karyawanId === karyawanId && a.tanggal === tanggal);
+            
+            if (actualOut && data && data.shift) {
                 const shiftInfo = jamKerja[data.jabatan][data.shift];
                 
-                if (actualOut && shiftInfo && shiftInfo.end !== "-") {
+                if (shiftInfo && shiftInfo.end !== "-") {
                     const actualOutTime = new Date(`2000-01-01T${actualOut}`);
                     const shiftEndTime = new Date(`2000-01-01T${shiftInfo.end}`);
                     
@@ -641,27 +696,20 @@
                         lembur = (actualOutTime - shiftEndTime) / (1000 * 60 * 60); // dalam jam
                     }
                     
-                    document.getElementById(`lembur-${data.karyawanId}-${data.tanggal}`).textContent = lembur > 0 ? lembur.toFixed(2) : '-';
+                    document.getElementById(`lembur-${karyawanId}-${tanggal}`).textContent = lembur > 0 ? lembur.toFixed(2) : '-';
                     
-                    // Simpan data actual dan lembur
+                    // Simpan data lembur
                     const existingIndex = absensiData.findIndex(a => 
-                        a.karyawanId === data.karyawanId && a.tanggal === data.tanggal
+                        a.karyawanId === karyawanId && a.tanggal === tanggal
                     );
                     
                     if (existingIndex !== -1) {
-                        absensiData[existingIndex].actualIn = document.getElementById(`actualIn-${data.karyawanId}-${data.tanggal}`).value;
                         absensiData[existingIndex].actualOut = actualOut;
                         absensiData[existingIndex].lembur = lembur > 0 ? lembur.toFixed(2) : '-';
-                        absensiData[existingIndex].pic = document.getElementById(`pic-${data.karyawanId}-${data.tanggal}`).value;
-                        absensiData[existingIndex].rmc = document.getElementById(`rmc-${data.karyawanId}-${data.tanggal}`).value;
-                        absensiData[existingIndex].remarks = document.getElementById(`remarks-${data.karyawanId}-${data.tanggal}`).value;
+                        localStorage.setItem('absensiData', JSON.stringify(absensiData));
                     }
                 }
-            });
-            
-            localStorage.setItem('absensiData', JSON.stringify(absensiData));
-            populatePICFilter(); // Perbarui filter PIC dengan data terbaru
-            alert('Perhitungan lembur selesai!');
+            }
         }
 
         // Fungsi untuk sorting tabel
@@ -681,7 +729,7 @@
                 let aValue, bValue;
                 
                 // Ambil nilai dari sel yang sesuai
-                if (columnIndex === 7) { // Kolom Lembur (Jam)
+                if (columnIndex === 8) { // Kolom Lembur (Jam)
                     aValue = parseFloat(a.cells[columnIndex].textContent) || 0;
                     bValue = parseFloat(b.cells[columnIndex].textContent) || 0;
                 } else if (columnIndex === 2) { // Kolom Tanggal
@@ -690,6 +738,9 @@
                 } else if (a.cells[columnIndex].querySelector('input')) {
                     aValue = a.cells[columnIndex].querySelector('input').value.toLowerCase();
                     bValue = b.cells[columnIndex].querySelector('input').value.toLowerCase();
+                } else if (a.cells[columnIndex].querySelector('td').id) {
+                    aValue = a.cells[columnIndex].textContent.toLowerCase();
+                    bValue = b.cells[columnIndex].textContent.toLowerCase();
                 } else {
                     aValue = a.cells[columnIndex].textContent.toLowerCase();
                     bValue = b.cells[columnIndex].textContent.toLowerCase();
@@ -781,6 +832,7 @@
 
         // Inisialisasi tabel saat halaman dimuat
         window.onload = function() {
+            populateNameFilter();
             generateEntryTable();
             
             // Inisialisasi arah sorting
