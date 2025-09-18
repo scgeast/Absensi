@@ -8,7 +8,378 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* ... (CSS tetap sama seperti sebelumnya) ... */
+        :root {
+            --primary-color: #2a2d43;
+            --secondary-color: #4a5079;
+            --accent-color: #7b89c9;
+            --highlight-color: #a6b1e8;
+            --text-color: #e4e8f0;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .futuristic-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .futuristic-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(166, 177, 232, 0.5);
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .filter-section {
+            background-color: white;
+            padding: 15px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            border-radius: 5px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            margin: 0 2px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--highlight-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-futuristic {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            transition: all 0.3s;
+        }
+        
+        .btn-futuristic:hover {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(123, 137, 201, 0.25);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tab-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+            max-height: 500px;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: auto;
+            min-width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        
+        th, td {
+            padding: 4px 6px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 0.8rem;
+            background-color: white;
+            height: 35px;
+            min-width: 80px;
+            max-width: 120px;
+        }
+        
+        th {
+            background-color: var(--secondary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: bold;
+            font-size: 0.75rem;
+            padding: 4px 4px;
+            position: relative;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            border: none;
+            text-align: center;
+            background: transparent;
+            padding: 3px;
+            font-size: 0.8rem;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+        
+        /* Warna yang lebih jelas untuk setiap shift - DITUKAR untuk Cuti dan Off */
+        .shift-1 { background-color: #4CAF50; color: white; } /* Pagi - Hijau */
+        .shift-2 { background-color: #FFC107; color: black; } /* Siang - Kuning */
+        .shift-3 { background-color: #2196F3; color: white; } /* Malam - Biru */
+        .shift-11 { background-color: #8BC34A; color: white; } /* Pjk Pagi - Hijau muda */
+        .shift-22 { background-color: #FF9800; color: white; } /* Pjk Siang - Jingga */
+        .shift-C { background-color: #9E9E9E; color: white; } /* Cuti - Abu-abu (DITUKAR) */
+        .shift-O { background-color: #F44336; color: white; } /* Off - Merah (DITUKAR) */
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        /* Styling untuk Tab 3 */
+        .overtime-table input {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .overtime-table th {
+            font-size: 0.75rem;
+            white-space: nowrap;
+            padding: 4px 3px;
+        }
+        
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-edit {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 4px 8px;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+        
+        .remarks-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .remarks-text {
+            flex-grow: 1;
+            text-align: left;
+            padding: 4px;
+            min-height: 25px;
+            font-size: 0.8rem;
+        }
+        
+        /* Style untuk collapsible sections */
+        .collapsible {
+            background-color: #f8f9fa;
+            color: #444;
+            cursor: pointer;
+            padding: 8px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .active, .collapsible:hover {
+            background-color: #e2e3e5;
+        }
+        
+        .collapsible-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: white;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .collapsible:after {
+            content: '\002B'; /* Plus sign */
+            color: #777;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        
+        .active:after {
+            content: "\2212"; /* Minus sign */
+        }
+        
+        /* Style untuk input time */
+        input[type="time"] {
+            font-size: 0.8rem;
+            padding: 3px;
+        }
+        
+        /* Style untuk pengaturan header */
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .header-control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .header-control-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .header-control-input {
+            width: 60px;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        /* Custom scrollbar untuk tabel */
+        .table-container::-webkit-scrollbar {
+            height: 12px;
+            width: 12px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 6px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #a6b1e8;
+            border-radius: 6px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #7b89c9;
+        }
+
+        .filter-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
         
         /* Style untuk input read-only */
         .read-only-input {
@@ -25,61 +396,298 @@
     </style>
 </head>
 <body>
-    <!-- ... (HTML tetap sama seperti sebelumnya) ... -->
+    <header class="futuristic-header">
+        <div class="container">
+            <h1 class="header-title text-center">Sistem Absensi Karyawan</h1>
+            <p class="header-subtitle text-center">Manajemen Kehadiran Modern dan Efisien</p>
+        </div>
+    </header>
 
-    <script>
-        // ... (JavaScript lainnya tetap sama) ...
+    <div class="container mt-4">
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <label for="dateRange" class="form-label">Range Tanggal</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startDate">
+                        <span class="input-group-text">s/d</span>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label for="employeeName" class="form-label">Nama Karyawan</label>
+                    <select class="form-select" id="employeeName">
+                        <option value="all">Select All</option>
+                        <!-- Opsi akan diisi oleh JavaScript -->
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end mb-2">
+                    <button class="btn btn-futuristic me-2" id="applyFilter">
+                        <i class="fas fa-filter me-1"></i> Terapkan Filter
+                    </button>
+                    <button class="btn btn-futuristic" id="clearFilter">
+                        <i class="fas fa-times me-1"></i> Hapus Filter
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        // Fungsi untuk mengupdate body tabel entry tanpa menghapus data yang ada
-        function updateEntryTableBody() {
-            const tbody = document.querySelector('#entryTable tbody');
-            
-            // Jika tidak ada data, buat baris default
-            if (absensiData.length === 0) {
-                initialEmployees.forEach(employee => {
-                    const row = document.createElement('tr');
-                    let rowHTML = `
-                        <td><input type="text" value="${employee.area}" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                        <td><input type="text" value="${employee.name}" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                        <td><input type="text" value="${employee.position}" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                    `;
+        <div id="filterInfo" class="filter-info" style="display: none;">
+            <!-- Informasi filter akan ditampilkan di sini -->
+        </div>
+
+        <ul class="nav nav-tabs" id="absensiTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry" type="button" role="tab" aria-controls="entry" aria-selected="true">
+                    <i class="fas fa-pen-to-square me-1"></i> Entry
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="output-tab" data-bs-toggle="tab" data-bs-target="#output" type="button" role="tab" aria-controls="output" aria-selected="false">
+                    <i class="fas fa-file-export me-1"></i> Out Put Absen
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overtime-tab" data-bs-toggle="tab" data-bs-target="#overtime" type="button" role="tab" aria-controls="overtime" aria-selected="false">
+                    <i class="fas fa-calculator me-1"></i> Over Time Calculation
+                </button>
+            </li>
+            <div class="ms-auto d-flex align-items-center">
+                <button class="btn btn-futuristic me-2" id="saveData">
+                    <i class="fas fa-save me-1"></i> Save
+                </button>
+                <button class="btn btn-futuristic" id="exportExcel">
+                    <i class="fas fa-file-excel me-1"></i> Export Excel
+                </button>
+            </div>
+        </ul>
+
+        <div class="tab-content" id="absensiTabContent">
+            <div class="tab-pane fade show active" id="entry" role="tabpanel" aria-labelledby="entry-tab">
+                <button type="button" class="collapsible">Form Entry Absensi</button>
+                <div class="collapsible-content">
+                    <p>Masukkan kode shift (1, 2, 3, 11, 22, C, O) untuk mengisi sel dan melihat warna sesuai jenis shift.</p>
                     
-                    dateRange.forEach(() => {
-                        rowHTML += '<td><input type="text" class="shift-input" onchange="updateShiftColor(this)"></td>';
-                    });
+                    <div class="legend">
+                        <div class="legend-item shift-1">
+                            <div class="legend-color" style="background-color: #4CAF50;"></div>
+                            <span>Pagi (1)</span>
+                        </div>
+                        <div class="legend-item shift-2">
+                            <div class="legend-color" style="background-color: #FFC107;"></div>
+                            <span>Siang (2)</span>
+                        </div>
+                        <div class="legend-item shift-3">
+                            <div class="legend-color" style="background-color: #2196F3;"></div>
+                            <span>Malam (3)</span>
+                        </div>
+                        <div class="legend-item shift-11">
+                            <div class="legend-color" style="background-color: #8BC34A;"></div>
+                            <span>Pjk Pagi (11)</span>
+                        </div>
+                        <div class="legend-item shift-22">
+                            <div class="legend-color" style="background-color: #FF9800;"></div>
+                            <span>Pjk Siang (22)</span>
+                        </div>
+                        <div class="legend-item shift-C">
+                            <div class="legend-color" style="background-color: #9E9E9E;"></div>
+                            <span>Cuti (C)</span>
+                        </div>
+                        <div class="legend-item shift-O">
+                            <div class="legend-color" style="background-color: #F44336;"></div>
+                            <span>Off (O)</span>
+                        </div>
+                    </div>
                     
-                    rowHTML += '<td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
-                    
-                    row.innerHTML = rowHTML;
-                    tbody.appendChild(row);
-                });
-            } else {
-                // Gunakan data yang ada, tambah/kurangi kolom tanggal sesuai kebutuhan
-                tbody.innerHTML = '';
+                    <div class="header-controls">
+                        <div class="header-control-group">
+                            <span class="header-control-label">Lebar Header:</span>
+                            <input type="number" id="headerWidth" class="header-control-input" placeholder="px" min="60" max="150" value="90">
+                        </div>
+                        <div class="header-control-group">
+                            <span class="header-control-label">Tinggi Header:</span>
+                            <input type="number" id="headerHeight" class="header-control-input" placeholder="px" min="30" max="60" value="35">
+                        </div>
+                        <button class="btn btn-futuristic" id="applyHeaderSize">
+                            <i class="fas fa-check me-1"></i> Terapkan
+                        </button>
+                    </div>
+                </div>
                 
-                absensiData.forEach(employee => {
-                    const row = document.createElement('tr');
-                    let rowHTML = `
-                        <td><input type="text" value="${employee.area}" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                        <td><input type="text" value="${employee.name}" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                        <td><input type="text" value="${employee.position}" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
-                    `;
-                    
-                    dateRange.forEach(date => {
-                        const dateStr = formatDateForShift(date);
-                        const shiftValue = employee.shifts[dateStr] || '';
-                        rowHTML += `<td><input type="text" value="${shiftValue}" class="shift-input" onchange="updateShiftColor(this)"></td>`;
-                    });
-                    
-                    rowHTML += '<td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
-                    
-                    row.innerHTML = rowHTML;
-                    tbody.appendChild(row);
-                });
-            }
+                <div class="table-container">
+                    <table id="entryTable">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <!-- Kolom tanggal akan diisi oleh JavaScript -->
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-futuristic" id="addRow">
+                        <i class="fas fa-plus me-1"></i> Add Row
+                    </button>
+                </div>
+            </div>
             
-            // Inisialisasi warna shift
-            initializeShiftColors();
+            <div class="tab-pane fade" id="output" role="tabpanel" aria-labelledby="output-tab">
+                <button type="button" class="collapsible">Output Data Absensi</button>
+                <div class="collapsible-content">
+                    <p>Data absensi yang telah diinput akan muncul di sini dengan shift check in/out yang sesuai.</p>
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="outputTable">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Shift Check In</th>
+                                <th>Shift Check Out</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="overtime" role="tabpanel" aria-labelledby="overtime-tab">
+                <button type="button" class="collapsible">Perhitungan Lembur</button>
+                <div class="collapsible-content">
+                    <p>Di sini Anda dapat mengelola perhitungan lembur karyawan.</p>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="overtime-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Area</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Shift Check In</th>
+                                <th>Shift Check Out</th>
+                                <th>WT/Normal</th>
+                                <th>Actual Check In</th>
+                                <th>Actual Check Out</th>
+                                <th>Over Time</th>
+                                <th>Cek RMC</th>
+                                <th>RKP PIC</th>
+                                <th>Rmc - Shift Check Out</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overtimeTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data matrik untuk shift
+        const shiftMatrix = {
+            "Dispatcher": {
+                "1": { name: "Pagi", checkIn: "07:00", checkOut: "15:00", hours: "07:00" },
+                "2": { name: "Siang", checkIn: "15:00", checkOut: "23:00", hours: "07:00" },
+                "3": { name: "Malam", checkIn: "23:00", checkOut: "07:00", hours: "08:00" },
+                "11": { name: "Pjk pagi", checkIn: "07:00", checkOut: "12:00", hours: "05:00" },
+                "22": { name: "Pjk Siang", checkIn: "15:00", checkOut: "20:00", hours: "05:00" },
+                "C": { name: "Cuti", checkIn: "", checkOut: "", hours: "" },
+                "O": { name: "Off", checkIn: "", checkOut: "", hours: "" }
+            },
+            "Booking": {
+                "1": { name: "Pagi", checkIn: "08:00", checkOut: "16:00", hours: "07:00" },
+                "2": { name: "Siang", checkIn: "16:00", checkOut: "24:00", hours: "08:00" },
+                "3": { name: "Malam", checkIn: "00:00", checkOut: "08:00", hours: "08:00" },
+                "11": { name: "Pjk pagi", checkIn: "08:00", checkOut: "13:00", hours: "05:00" },
+                "22": { name: "Pjk Siang", checkIn: "16:00", checkOut: "21:00", hours: "05:00" },
+                "C": { name: "Cuti", checkIn: "", checkOut: "", hours: "" },
+                "O": { name: "Off", checkIn: "", checkOut: "", hours: "" }
+            }
+        };
+
+        // Data awal karyawan
+        const initialEmployees = [
+            { area: "CDC East", name: "Fahmi Ardiansyal", position: "Dispatcher" },
+            { area: "CDC East", name: "Agung Setyawan", position: "Dispatcher" },
+            { area: "CDC East", name: "Drajat Triono", position: "Dispatcher" },
+            { area: "CDC East", name: "Wiyanto", position: "Dispatcher" },
+            { area: "CDC East", name: "Nur Fauziah", position: "Booking" }
+        ];
+
+        // Variabel global untuk menyimpan data
+        let absensiData = [];
+        let dateRange = [];
+        let remarksData = {}; // Menyimpan data remarks
+        let overtimeData = {}; // Menyimpan data overtime
+        let currentFilter = {
+            startDate: null,
+            endDate: null,
+            employeeName: 'all'
+        };
+
+        // Fungsi untuk memformat tanggal sebagai string (dd/mm/yyyy)
+        function formatDate(date) {
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        // Fungsi untuk memformat tanggal sebagai string untuk kunci shifts (dd/mm/yyyy)
+        function formatDateForShift(date) {
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        // Fungsi untuk memformat tanggal sebagai string untuk tampilan header (Hari dd/mm/yyyy)
+        function formatDateForHeader(date) {
+            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const dayName = dayNames[date.getDay()];
+            return `${dayName} ${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        // Fungsi untuk mengupdate warna sel berdasarkan nilai shift
+        function updateShiftColor(input) {
+            const value = input.value.toUpperCase();
+            const td = input.parentElement;
+            
+            // Hapus semua kelas shift
+            td.classList.remove("shift-1", "shift-2", "shift-3", "shift-11", "shift-22", "shift-C", "shift-O");
+            
+            // Tambahkan kelas sesuai nilai shift
+            if (value === "1") td.classList.add("shift-1");
+            else if (value === "2") td.classList.add("shift-2");
+            else if (value === "3") td.classList.add("shift-3");
+            else if (value === "11") td.classList.add("shift-11");
+            else if (value === "22") td.classList.add("shift-22");
+            else if (value === "C") td.classList.add("shift-C");
+            else if (value === "O") td.classList.add("shift-O");
+            
+            // Simpan data
+            saveDataToLocalStorage();
+            
+            // Update output table
+            generateOutputTable();
+            
+            // Update overtime table
+            generateOvertimeTable();
         }
 
         // Fungsi untuk membuat input field dapat diedit
@@ -100,144 +708,55 @@
             }, { once: true });
         }
 
-        // Fungsi untuk memformat tanggal sebagai string untuk kunci shifts (dd/mm/yyyy)
-        function formatDateForShift(date) {
-            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-        }
-
-        // Fungsi untuk memformat tanggal sebagai string untuk tampilan header (Hari dd/mm/yyyy)
-        function formatDateForHeader(date) {
-            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const dayName = dayNames[date.getDay()];
-            return `${dayName} ${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-        }
-
-        // Fungsi untuk menghasilkan output table dengan filter
-        function generateOutputTable() {
-            const outputTable = document.querySelector('#outputTable tbody');
-            outputTable.innerHTML = '';
+        // Fungsi untuk menghapus baris
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            const name = row.querySelector('.name-input').value;
+            const position = row.querySelector('.position-input').value;
             
-            const rows = document.querySelectorAll('#entryTable tbody tr');
-            const headerCells = document.querySelectorAll('#entryTable thead th');
-            const selectedEmployee = currentFilter.employeeName;
+            // Hapus dari data absensi
+            absensiData = absensiData.filter(emp => !(emp.name === name && emp.position === position));
             
-            rows.forEach((row, rowIndex) => {
-                const area = row.querySelector('.area-input').value;
-                const name = row.querySelector('.name-input').value;
-                const position = row.querySelector('.position-input').value;
-                
-                // Filter berdasarkan nama karyawan jika dipilih
-                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
-                    return;
+            // Hapus dari data remarks
+            for (const key in remarksData) {
+                if (key.includes(`${name}-${position}`)) {
+                    delete remarksData[key];
                 }
-                
-                const shiftInputs = row.querySelectorAll('.shift-input');
-                
-                shiftInputs.forEach((input, dayIndex) => {
-                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
-                        const date = dateRange[dayIndex];
-                        const dateText = formatDateForHeader(date);
-                        const dateKey = formatDateForShift(date);
-                        const shiftCode = input.value.toUpperCase();
-                        const shiftData = shiftMatrix[position] && shiftMatrix[position][shiftCode] 
-                            ? shiftMatrix[position][shiftCode] 
-                            : { name: "", checkIn: "", checkOut: "", hours: "" };
-                        
-                        // Buat key unik untuk remarks
-                        const remarkKey = `${name}-${position}-${dateKey}`;
-                        const remarkValue = remarksData[remarkKey] || '';
-                        
-                        const newRow = document.createElement('tr');
-                        newRow.innerHTML = `
-                            <td>${area}</td>
-                            <td>${name}</td>
-                            <td>${position}</td>
-                            <td>${dateText}</td>
-                            <td>${shiftData.name}</td>
-                            <td>${shiftData.checkIn}</td>
-                            <td>${shiftData.checkOut}</td>
-                            <td>
-                                <div class="remarks-container">
-                                    <div class="remarks-text">${remarkValue}</div>
-                                    <button class="btn-edit" onclick="editRemarks('${remarkKey}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        
-                        outputTable.appendChild(newRow);
-                    }
-                });
-            });
-        }
-
-        // Fungsi untuk menghasilkan overtime table dengan filter
-        function generateOvertimeTable() {
-            const overtimeTableBody = document.querySelector('#overtimeTableBody');
-            overtimeTableBody.innerHTML = '';
+            }
             
-            const rows = document.querySelectorAll('#entryTable tbody tr');
-            const headerCells = document.querySelectorAll('#entryTable thead th');
-            const selectedEmployee = currentFilter.employeeName;
-            
-            let rowCount = 1;
-            
-            rows.forEach((row, rowIndex) => {
-                const area = row.querySelector('.area-input').value;
-                const name = row.querySelector('.name-input').value;
-                const position = row.querySelector('.position-input').value;
-                
-                // Filter berdasarkan nama karyawan jika dipilih
-                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
-                    return;
+            // Hapus dari data overtime
+            for (const key in overtimeData) {
+                if (key.includes(`${name}-${position}`)) {
+                    delete overtimeData[key];
                 }
-                
-                const shiftInputs = row.querySelectorAll('.shift-input');
-                
-                shiftInputs.forEach((input, dayIndex) => {
-                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
-                        const date = dateRange[dayIndex];
-                        const dateText = formatDateForHeader(date);
-                        const dateKey = formatDateForShift(date);
-                        const shiftCode = input.value.toUpperCase();
-                        const shiftData = shiftMatrix[position] && shiftMatrix[position][shiftCode] 
-                            ? shiftMatrix[position][shiftCode] 
-                            : { name: "", checkIn: "", checkOut: "", hours: "" };
-                        
-                        // Buat key unik untuk data overtime
-                        const overtimeKey = `${name}-${position}-${dateKey}`;
-                        const savedOvertimeData = overtimeData[overtimeKey] || {};
-                        
-                        const newRow = document.createElement('tr');
-                        newRow.innerHTML = `
-                            <td>${rowCount}</td>
-                            <td>${area}</td>
-                            <td>${name}</td>
-                            <td>${position}</td>
-                            <td>${dateText}</td>
-                            <td>${shiftData.name}</td>
-                            <td>${shiftData.checkIn}</td>
-                            <td>${shiftData.checkOut}</td>
-                            <td>${shiftData.hours}</td>
-                            <td><input type="time" class="actual-check-in" value="${savedOvertimeData.actualCheckIn || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
-                            <td><input type="time" class="actual-check-out" value="${savedOvertimeData.actualCheckOut || ''}" onchange="calculateOvertime(this, '${overtimeKey}')"></td>
-                            <td><input type="text" class="over-time" value="${savedOvertimeData.overTime || ''}" readonly></td>
-                            <td><input type="time" class="cek-rmc" value="${savedOvertimeData.cekRmc || ''}" onchange="calculateRmcShiftOut(this, '${overtimeKey}')"></td>
-                            <td><input type="time" class="rkp-pic" value="${savedOvertimeData.rkpPic || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
-                            <td><input type="text" class="rmc-shift-out" value="${savedOvertimeData.rmcShiftOut || ''}" readonly></td>
-                            <td><input type="text" class="remarks" value="${savedOvertimeData.remarks || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
-                        `;
-                        
-                        overtimeTableBody.appendChild(newRow);
-                        rowCount++;
-                    }
-                });
-            });
+            }
+            
+            row.remove();
+            
+            // Simpan data setelah menghapus baris
+            saveDataToLocalStorage();
+            
+            // Update output table
+            generateOutputTable();
+            
+            // Update overtime table
+            generateOvertimeTable();
+            
+            // Update dropdown nama karyawan
+            updateEmployeeDropdown();
         }
 
-        // Variabel untuk menyimpan data overtime
-        let overtimeData = {};
+        // Fungsi untuk mengedit remarks
+        function editRemarks(key) {
+            const currentValue = remarksData[key] || '';
+            const newValue = prompt('Edit Remarks:', currentValue);
+            
+            if (newValue !== null) {
+                remarksData[key] = newValue;
+                saveDataToLocalStorage();
+                generateOutputTable();
+            }
+        }
 
         // Fungsi untuk menyimpan data overtime
         function saveOvertimeData(key, input) {
@@ -324,6 +843,538 @@
             saveOvertimeData(key, rmcShiftOutInput);
         }
 
+        // Set tanggal default untuk filter
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('startDate').valueAsDate = firstDayOfMonth;
+            document.getElementById('endDate').valueAsDate = today;
+            
+            // Inisialisasi collapsible sections
+            initCollapsible();
+            
+            // Terapkan filter tanggal
+            applyDateFilter();
+            
+            // Muat data dari localStorage
+            loadDataFromLocalStorage();
+            
+            // Update dropdown nama karyawan
+            updateEmployeeDropdown();
+            
+            // Tambahkan event listener untuk mengatur ukuran header
+            document.getElementById('applyHeaderSize').addEventListener('click', applyHeaderSize);
+            
+            // Tambahkan event listener untuk tombol filter
+            document.getElementById('applyFilter').addEventListener('click', applyFilterHandler);
+            document.getElementById('clearFilter').addEventListener('click', clearFilterHandler);
+            
+            // Tambahkan event listener untuk tombol Save dan Export
+            document.getElementById('saveData').addEventListener('click', function() {
+                saveDataToLocalStorage();
+                alert('Data berhasil disimpan!');
+            });
+            
+            document.getElementById('exportExcel').addEventListener('click', function() {
+                // Export data dari Tab 2 (Output)
+                const outputTable = document.getElementById('outputTable');
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.table_to_sheet(outputTable);
+                XLSX.utils.book_append_sheet(wb, ws, "Output Absensi");
+                
+                // Export data dari Tab 3 (Overtime)
+                const overtimeTable = document.querySelector('.overtime-table');
+                const ws2 = XLSX.utils.table_to_sheet(overtimeTable);
+                XLSX.utils.book_append_sheet(wb, ws2, "Perhitungan Lembur");
+                
+                // Simpan file
+                XLSX.writeFile(wb, "Data_Absensi.xlsx");
+            });
+            
+            // Tambahkan event listener untuk tombol Add Row
+            document.getElementById('addRow').addEventListener('click', function() {
+                const tbody = document.querySelector('#entryTable tbody');
+                const newRow = document.createElement('tr');
+                
+                let rowHTML = `
+                    <td><input type="text" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    <td><input type="text" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    <td><input type="text" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                `;
+                
+                dateRange.forEach(() => {
+                    rowHTML += '<td><input type="text" class="shift-input" onchange="updateShiftColor(this)"></td>';
+                });
+                
+                rowHTML += '<td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
+                
+                newRow.innerHTML = rowHTML;
+                tbody.appendChild(newRow);
+                
+                // Inisialisasi warna shift untuk baris baru
+                initializeShiftColors();
+                
+                // Tambahkan event listener untuk navigasi dengan panah
+                addArrowNavigation();
+            });
+        });
+
+        // Handler untuk menerapkan filter
+        function applyFilterHandler() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const employeeName = document.getElementById('employeeName').value;
+            
+            // Validasi tanggal
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                alert('Tanggal tidak valid. Silakan pilih tanggal yang benar.');
+                return;
+            }
+            
+            if (startDate > endDate) {
+                alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir.');
+                return;
+            }
+            
+            currentFilter = {
+                startDate: startDate,
+                endDate: endDate,
+                employeeName: employeeName
+            };
+            
+            applyDateFilter();
+            updateFilterInfo();
+        }
+
+        // Handler untuk menghapus filter
+        function clearFilterHandler() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('startDate').valueAsDate = firstDayOfMonth;
+            document.getElementById('endDate').valueAsDate = today;
+            document.getElementById('employeeName').value = 'all';
+            
+            currentFilter = {
+                startDate: firstDayOfMonth,
+                endDate: today,
+                employeeName: 'all'
+            };
+            
+            applyDateFilter();
+            updateFilterInfo();
+        }
+
+        // Fungsi untuk menampilkan informasi filter
+        function updateFilterInfo() {
+            const filterInfo = document.getElementById('filterInfo');
+            const startDate = formatDateDisplay(currentFilter.startDate);
+            const endDate = formatDateDisplay(currentFilter.endDate);
+            const employeeName = currentFilter.employeeName === 'all' ? 'Semua Karyawan' : currentFilter.employeeName;
+            
+            filterInfo.innerHTML = `
+                <strong>Filter Aktif:</strong> 
+                Tanggal: ${startDate} - ${endDate} | 
+                Karyawan: ${employeeName}
+            `;
+            
+            filterInfo.style.display = 'block';
+        }
+
+        // Fungsi untuk memformat tampilan tanggal
+        function formatDateDisplay(date) {
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        // Fungsi untuk mengatur ukuran header
+        function applyHeaderSize() {
+            const width = document.getElementById('headerWidth').value;
+            const height = document.getElementById('headerHeight').value;
+            
+            const headers = document.querySelectorAll('#entryTable th');
+            const cells = document.querySelectorAll('#entryTable td');
+            
+            headers.forEach(header => {
+                if (width) {
+                    header.style.width = width + 'px';
+                    header.style.minWidth = width + 'px';
+                    header.style.maxWidth = width + 'px';
+                }
+                if (height) {
+                    header.style.height = height + 'px';
+                }
+            });
+            
+            cells.forEach(cell => {
+                if (width) {
+                    cell.style.width = width + 'px';
+                    cell.style.minWidth = width + 'px';
+                    cell.style.maxWidth = width + 'px';
+                }
+                if (height) {
+                    cell.style.height = height + 'px';
+                }
+            });
+            
+            // Simpan pengaturan ke localStorage
+            localStorage.setItem('headerWidth', width);
+            localStorage.setItem('headerHeight', height);
+        }
+
+        // Fungsi untuk inisialisasi collapsible sections
+        function initCollapsible() {
+            const coll = document.getElementsByClassName("collapsible");
+            for (let i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    const content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+                
+                // Buka section pertama secara default
+                if (i === 0) {
+                    coll[i].classList.add("active");
+                    const content = coll[i].nextElementSibling;
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            }
+        }
+
+        // Fungsi untuk update dropdown nama karyawan
+        function updateEmployeeDropdown() {
+            const employeeDropdown = document.getElementById('employeeName');
+            const currentValue = employeeDropdown.value;
+            
+            // Hapus semua opsi kecuali "Select All"
+            while (employeeDropdown.options.length > 1) {
+                employeeDropdown.remove(1);
+            }
+            
+            // Dapatkan daftar nama unik dari data absensi
+            const uniqueNames = new Set();
+            absensiData.forEach(employee => {
+                if (employee.name) uniqueNames.add(employee.name);
+            });
+            
+            // Jika tidak ada data, gunakan data awal
+            if (uniqueNames.size === 0) {
+                initialEmployees.forEach(employee => {
+                    uniqueNames.add(employee.name);
+                });
+            }
+            
+            // Tambahkan opsi untuk setiap nama
+            uniqueNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                employeeDropdown.appendChild(option);
+            });
+            
+            // Kembalikan nilai yang dipilih sebelumnya jika masih ada
+            if (currentValue !== 'all') {
+                const optionExists = Array.from(employeeDropdown.options).some(opt => opt.value === currentValue);
+                if (optionExists) {
+                    employeeDropdown.value = currentValue;
+                }
+            }
+        }
+
+        // Fungsi untuk menerapkan filter tanggal
+        function applyDateFilter() {
+            const startDate = currentFilter.startDate;
+            const endDate = currentFilter.endDate;
+            
+            // Reset dateRange
+            dateRange = [];
+            
+            // Generate tanggal antara startDate dan endDate
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                dateRange.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Update tabel entry
+            updateEntryTable();
+            
+            // Update output table
+            generateOutputTable();
+            
+            // Update overtime table
+            generateOvertimeTable();
+        }
+
+        // Fungsi untuk mengupdate tabel entry berdasarkan dateRange
+        function updateEntryTable() {
+            const entryTable = document.querySelector('#entryTable');
+            const thead = entryTable.querySelector('thead tr');
+            const tbody = entryTable.querySelector('tbody');
+            
+            // Update header
+            let headerHTML = '<th>Area</th><th>Name</th><th>Position</th>';
+            dateRange.forEach(date => {
+                headerHTML += `<th>${formatDateForHeader(date)}</th>`;
+            });
+            headerHTML += '<th>Action</th>';
+            thead.innerHTML = headerHTML;
+            
+            // Update body - jangan hapus data yang sudah ada, hanya update kolom tanggal
+            updateEntryTableBody();
+            
+            // Inisialisasi warna shift
+            initializeShiftColors();
+            
+            // Terapkan pengaturan header yang disimpan
+            loadHeaderSettings();
+            
+            // Tambahkan event listener untuk navigasi dengan panah
+            addArrowNavigation();
+        }
+
+        // Fungsi untuk mengupdate body tabel entry tanpa menghapus data yang ada
+        function updateEntryTableBody() {
+            const tbody = document.querySelector('#entryTable tbody');
+            
+            // Jika tidak ada data, buat baris default
+            if (absensiData.length === 0) {
+                initialEmployees.forEach(employee => {
+                    const row = document.createElement('tr');
+                    let rowHTML = `
+                        <td><input type="text" value="${employee.area}" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                        <td><input type="text" value="${employee.name}" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                        <td><input type="text" value="${employee.position}" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    `;
+                    
+                    dateRange.forEach(() => {
+                        rowHTML += '<td><input type="text" class="shift-input" onchange="updateShiftColor(this)"></td>';
+                    });
+                    
+                    rowHTML += '<td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
+                    
+                    row.innerHTML = rowHTML;
+                    tbody.appendChild(row);
+                });
+            } else {
+                // Gunakan data yang ada, tambah/kurangi kolom tanggal sesuai kebutuhan
+                tbody.innerHTML = '';
+                
+                absensiData.forEach(employee => {
+                    const row = document.createElement('tr');
+                    let rowHTML = `
+                        <td><input type="text" value="${employee.area}" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                        <td><input type="text" value="${employee.name}" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                        <td><input type="text" value="${employee.position}" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    `;
+                    
+                    dateRange.forEach(date => {
+                        const dateStr = formatDateForShift(date);
+                        const shiftValue = employee.shifts[dateStr] || '';
+                        rowHTML += `<td><input type="text" value="${shiftValue}" class="shift-input" onchange="updateShiftColor(this)"></td>`;
+                    });
+                    
+                    rowHTML += '<td><button class="btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>';
+                    
+                    row.innerHTML = rowHTML;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        // Fungsi untuk memuat pengaturan header
+        function loadHeaderSettings() {
+            const savedWidth = localStorage.getItem('headerWidth');
+            const savedHeight = localStorage.getItem('headerHeight');
+            
+            if (savedWidth) {
+                document.getElementById('headerWidth').value = savedWidth;
+            }
+            if (savedHeight) {
+                document.getElementById('headerHeight').value = savedHeight;
+            }
+            
+            if (savedWidth || savedHeight) {
+                applyHeaderSize();
+            }
+        }
+
+        // Fungsi untuk menambahkan navigasi dengan panah
+        function addArrowNavigation() {
+            const inputs = document.querySelectorAll('#entryTable input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(e) {
+                    if ([37, 38, 39, 40].includes(e.keyCode)) { // Panah kiri, atas, kanan, bawah
+                        e.preventDefault();
+                        
+                        let nextIndex;
+                        if (e.keyCode === 37) { // Kiri
+                            nextIndex = index - 1;
+                        } else if (e.keyCode === 38) { // Atas
+                            const row = this.closest('tr');
+                            const inputsInRow = row.querySelectorAll('input');
+                            const currentColIndex = Array.from(inputsInRow).indexOf(this);
+                            const prevRow = row.previousElementSibling;
+                            if (prevRow) {
+                                const inputsInPrevRow = prevRow.querySelectorAll('input');
+                                nextIndex = index - inputsInRow.length + (currentColIndex - inputsInPrevRow.length);
+                            }
+                        } else if (e.keyCode === 39) { // Kanan
+                            nextIndex = index + 1;
+                        } else if (e.keyCode === 40) { // Bawah
+                            const row = this.closest('tr');
+                            const inputsInRow = row.querySelectorAll('input');
+                            const currentColIndex = Array.from(inputsInRow).indexOf(this);
+                            const nextRow = row.nextElementSibling;
+                            if (nextRow) {
+                                const inputsInNextRow = nextRow.querySelectorAll('input');
+                                nextIndex = index + inputsInRow.length + (currentColIndex - inputsInNextRow.length);
+                            }
+                        }
+                        
+                        if (nextIndex >= 0 && nextIndex < inputs.length) {
+                            inputs[nextIndex].focus();
+                            inputs[nextIndex].select();
+                        }
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk menginisialisasi warna shift
+        function initializeShiftColors() {
+            const shiftInputs = document.querySelectorAll('.shift-input');
+            shiftInputs.forEach(input => {
+                updateShiftColor(input);
+            });
+        }
+
+        // Fungsi untuk menghasilkan output table dengan filter
+        function generateOutputTable() {
+            const outputTable = document.querySelector('#outputTable tbody');
+            outputTable.innerHTML = '';
+            
+            const rows = document.querySelectorAll('#entryTable tbody tr');
+            const selectedEmployee = currentFilter.employeeName;
+            
+            rows.forEach((row, rowIndex) => {
+                const area = row.querySelector('.area-input').value;
+                const name = row.querySelector('.name-input').value;
+                const position = row.querySelector('.position-input').value;
+                
+                // Filter berdasarkan nama karyawan jika dipilih
+                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
+                    return;
+                }
+                
+                const shiftInputs = row.querySelectorAll('.shift-input');
+                
+                shiftInputs.forEach((input, dayIndex) => {
+                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
+                        const date = dateRange[dayIndex];
+                        const dateText = formatDateForHeader(date);
+                        const dateKey = formatDateForShift(date);
+                        const shiftCode = input.value.toUpperCase();
+                        const shiftData = shiftMatrix[position] && shiftMatrix[position][shiftCode] 
+                            ? shiftMatrix[position][shiftCode] 
+                            : { name: "", checkIn: "", checkOut: "", hours: "" };
+                        
+                        // Buat key unik untuk remarks
+                        const remarkKey = `${name}-${position}-${dateKey}`;
+                        const remarkValue = remarksData[remarkKey] || '';
+                        
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td>${area}</td>
+                            <td>${name}</td>
+                            <td>${position}</td>
+                            <td>${dateText}</td>
+                            <td>${shiftData.name}</td>
+                            <td>${shiftData.checkIn}</td>
+                            <td>${shiftData.checkOut}</td>
+                            <td>
+                                <div class="remarks-container">
+                                    <div class="remarks-text">${remarkValue}</div>
+                                    <button class="btn-edit" onclick="editRemarks('${remarkKey}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        
+                        outputTable.appendChild(newRow);
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk menghasilkan overtime table dengan filter
+        function generateOvertimeTable() {
+            const overtimeTableBody = document.querySelector('#overtimeTableBody');
+            overtimeTableBody.innerHTML = '';
+            
+            const rows = document.querySelectorAll('#entryTable tbody tr');
+            const selectedEmployee = currentFilter.employeeName;
+            
+            let rowCount = 1;
+            
+            rows.forEach((row, rowIndex) => {
+                const area = row.querySelector('.area-input').value;
+                const name = row.querySelector('.name-input').value;
+                const position = row.querySelector('.position-input').value;
+                
+                // Filter berdasarkan nama karyawan jika dipilih
+                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
+                    return;
+                }
+                
+                const shiftInputs = row.querySelectorAll('.shift-input');
+                
+                shiftInputs.forEach((input, dayIndex) => {
+                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
+                        const date = dateRange[dayIndex];
+                        const dateText = formatDateForHeader(date);
+                        const dateKey = formatDateForShift(date);
+                        const shiftCode = input.value.toUpperCase();
+                        const shiftData = shiftMatrix[position] && shiftMatrix[position][shiftCode] 
+                            ? shiftMatrix[position][shiftCode] 
+                            : { name: "", checkIn: "", checkOut: "", hours: "" };
+                        
+                        // Buat key unik untuk data overtime
+                        const overtimeKey = `${name}-${position}-${dateKey}`;
+                        const savedOvertimeData = overtimeData[overtimeKey] || {};
+                        
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td>${rowCount}</td>
+                            <td>${area}</td>
+                            <td>${name}</td>
+                            <td>${position}</td>
+                            <td>${dateText}</td>
+                            <td>${shiftData.name}</td>
+                            <td>${shiftData.checkIn}</td>
+                            <td>${shiftData.checkOut}</td>
+                            <td>${shiftData.hours}</td>
+                            <td><input type="time" class="actual-check-in" value="${savedOvertimeData.actualCheckIn || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
+                            <td><input type="time" class="actual-check-out" value="${savedOvertimeData.actualCheckOut || ''}" onchange="calculateOvertime(this, '${overtimeKey}')"></td>
+                            <td><input type="text" class="over-time" value="${savedOvertimeData.overTime || ''}" readonly></td>
+                            <td><input type="time" class="cek-rmc" value="${savedOvertimeData.cekRmc || ''}" onchange="calculateRmcShiftOut(this, '${overtimeKey}')"></td>
+                            <td><input type="time" class="rkp-pic" value="${savedOvertimeData.rkpPic || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
+                            <td><input type="text" class="rmc-shift-out" value="${savedOvertimeData.rmcShiftOut || ''}" readonly></td>
+                            <td><input type="text" class="remarks" value="${savedOvertimeData.remarks || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
+                        `;
+                        
+                        overtimeTableBody.appendChild(newRow);
+                        rowCount++;
+                    }
+                });
+            });
+        }
+
         // Fungsi untuk menyimpan data ke localStorage
         function saveDataToLocalStorage() {
             absensiData = [];
@@ -395,8 +1446,6 @@
             // Tampilkan informasi filter
             updateFilterInfo();
         }
-
-        // ... (JavaScript lainnya tetap sama) ...
     </script>
 </body>
 </html>
