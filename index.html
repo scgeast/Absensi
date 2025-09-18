@@ -425,9 +425,6 @@
                     <button class="btn btn-futuristic me-2" id="applyFilter">
                         <i class="fas fa-filter me-1"></i> Terapkan Filter
                     </button>
-                    <button class="btn btn-futuristic" id="clearFilter">
-                        <i class="fas fa-times me-1"></i> Hapus Filter
-                    </button>
                 </div>
             </div>
         </div>
@@ -868,7 +865,6 @@
             
             // Tambahkan event listener untuk tombol filter
             document.getElementById('applyFilter').addEventListener('click', applyFilterHandler);
-            document.getElementById('clearFilter').addEventListener('click', clearFilterHandler);
             
             // Tambahkan event listener untuk tombol Save dan Export
             document.getElementById('saveData').addEventListener('click', function() {
@@ -941,25 +937,6 @@
                 startDate: startDate,
                 endDate: endDate,
                 employeeName: employeeName
-            };
-            
-            applyDateFilter();
-            updateFilterInfo();
-        }
-
-        // Handler untuk menghapus filter
-        function clearFilterHandler() {
-            const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            
-            document.getElementById('startDate').valueAsDate = firstDayOfMonth;
-            document.getElementById('endDate').valueAsDate = today;
-            document.getElementById('employeeName').value = 'all';
-            
-            currentFilter = {
-                startDate: firstDayOfMonth,
-                endDate: today,
-                employeeName: 'all'
             };
             
             applyDateFilter();
@@ -1387,7 +1364,7 @@
                 const shifts = {};
                 
                 const shiftInputs = row.querySelectorAll('.shift-input');
-                shiftInputs.forEach((input, index) => {
+                shiftInputs.forEach((input, index) {
                     if (index < dateRange.length) { // Hanya untuk kolom tanggal
                         const date = dateRange[index];
                         const dateKey = formatDateForShift(date);
