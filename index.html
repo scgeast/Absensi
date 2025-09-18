@@ -372,6 +372,14 @@
         .table-container::-webkit-scrollbar-thumb:hover {
             background: #7b89c9;
         }
+
+        .filter-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -404,8 +412,15 @@
                     <button class="btn btn-futuristic me-2" id="applyFilter">
                         <i class="fas fa-filter me-1"></i> Terapkan Filter
                     </button>
+                    <button class="btn btn-futuristic" id="clearFilter">
+                        <i class="fas fa-times me-1"></i> Hapus Filter
+                    </button>
                 </div>
             </div>
+        </div>
+
+        <div id="filterInfo" class="filter-info" style="display: none;">
+            <!-- Informasi filter akan ditampilkan di sini -->
         </div>
 
         <ul class="nav nav-tabs" id="absensiTabs" role="tablist">
@@ -611,6 +626,11 @@
         let absensiData = [];
         let dateRange = [];
         let remarksData = {}; // Menyimpan data remarks
+        let currentFilter = {
+            startDate: null,
+            endDate: null,
+            employeeName: 'all'
+        };
 
         // Set tanggal default untuk filter
         document.addEventListener('DOMContentLoaded', function() {
@@ -634,7 +654,78 @@
             
             // Tambahkan event listener untuk mengatur ukuran header
             document.getElementById('applyHeaderSize').addEventListener('click', applyHeaderSize);
+            
+            // Tambahkan event listener untuk tombol filter
+            document.getElementById('applyFilter').addEventListener('click', applyFilterHandler);
+            document.getElementById('clearFilter').addEventListener('click', clearFilterHandler);
         });
+
+        // Handler untuk menerapkan filter
+        function applyFilterHandler() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const employeeName = document.getElementById('employeeName').value;
+            
+            // Validasi tanggal
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                alert('Tanggal tidak valid. Silakan pilih tanggal yang benar.');
+                return;
+            }
+            
+            if (startDate > endDate) {
+                alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir.');
+                return;
+            }
+            
+            currentFilter = {
+                startDate: startDate,
+                endDate: endDate,
+                employeeName: employeeName
+            };
+            
+            applyDateFilter();
+            updateFilterInfo();
+        }
+
+        // Handler untuk menghapus filter
+        function clearFilterHandler() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('startDate').valueAsDate = firstDayOfMonth;
+            document.getElementById('endDate').valueAsDate = today;
+            document.getElementById('employeeName').value = 'all';
+            
+            currentFilter = {
+                startDate: firstDayOfMonth,
+                endDate: today,
+                employeeName: 'all'
+            };
+            
+            applyDateFilter();
+            updateFilterInfo();
+        }
+
+        // Fungsi untuk menampilkan informasi filter
+        function updateFilterInfo() {
+            const filterInfo = document.getElementById('filterInfo');
+            const startDate = formatDateDisplay(currentFilter.startDate);
+            const endDate = formatDateDisplay(currentFilter.endDate);
+            const employeeName = currentFilter.employeeName === 'all' ? 'Semua Karyawan' : currentFilter.employeeName;
+            
+            filterInfo.innerHTML = `
+                <strong>Filter Aktif:</strong> 
+                Tanggal: ${startDate} - ${endDate} | 
+                Karyawan: ${employeeName}
+            `;
+            
+            filterInfo.style.display = 'block';
+        }
+
+        // Fungsi untuk memformat tampilan tanggal
+        function formatDateDisplay(date) {
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        }
 
         // Fungsi untuk mengatur ukuran header
         function applyHeaderSize() {
@@ -736,8 +827,8 @@
 
         // Fungsi untuk menerapkan filter tanggal
         function applyDateFilter() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
+            const startDate = currentFilter.startDate;
+            const endDate = currentFilter.endDate;
             
             // Reset dateRange
             dateRange = [];
@@ -776,8 +867,22 @@
             headerHTML += '<th>Action</th>';
             thead.innerHTML = headerHTML;
             
-            // Update body
-            tbody.innerHTML = '';
+            // Update body - jangan hapus data yang sudah ada, hanya update kolom tanggal
+            updateEntryTableBody();
+            
+            // Inisialisasi warna shift
+            initializeShiftColors();
+            
+            // Terapkan pengaturan header yang disimpan
+            loadHeaderSettings();
+            
+            // Tambahkan event listener untuk navigasi dengan panah
+            addArrowNavigation();
+        }
+
+        // Fungsi untuk mengupdate body tabel entry tanpa menghapus data yang ada
+        function updateEntryTableBody() {
+            const tbody = document.querySelector('#entryTable tbody');
             
             // Jika tidak ada data, buat baris default
             if (absensiData.length === 0) {
@@ -799,7 +904,9 @@
                     tbody.appendChild(row);
                 });
             } else {
-                // Gunakan data yang ada
+                // Gunakan data yang ada, tambah/kurangi kolom tanggal sesuai kebutuhan
+                tbody.innerHTML = '';
+                
                 absensiData.forEach(employee => {
                     const row = document.createElement('tr');
                     let rowHTML = `
@@ -820,15 +927,6 @@
                     tbody.appendChild(row);
                 });
             }
-            
-            // Inisialisasi warna shift
-            initializeShiftColors();
-            
-            // Terapkan pengaturan header yang disimpan
-            loadHeaderSettings();
-            
-            // Tambahkan event listener untuk navigasi dengan panah
-            addArrowNavigation();
         }
 
         // Fungsi untuk memuat pengaturan header
@@ -988,18 +1086,25 @@
             updateEmployeeDropdown();
         }
 
-        // Fungsi untuk menghasilkan output table
+        // Fungsi untuk menghasilkan output table dengan filter
         function generateOutputTable() {
             const outputTable = document.querySelector('#outputTable tbody');
             outputTable.innerHTML = '';
             
             const rows = document.querySelectorAll('#entryTable tbody tr');
             const headerCells = document.querySelectorAll('#entryTable thead th');
+            const selectedEmployee = currentFilter.employeeName;
             
             rows.forEach((row, rowIndex) => {
                 const area = row.querySelector('.area-input').value;
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
+                
+                // Filter berdasarkan nama karyawan jika dipilih
+                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
+                    return;
+                }
+                
                 const shiftInputs = row.querySelectorAll('.shift-input');
                 
                 shiftInputs.forEach((input, dayIndex) => {
@@ -1051,13 +1156,14 @@
             }
         }
 
-        // Fungsi untuk menghasilkan overtime table
+        // Fungsi untuk menghasilkan overtime table dengan filter
         function generateOvertimeTable() {
             const overtimeTableBody = document.querySelector('#overtimeTableBody');
             overtimeTableBody.innerHTML = '';
             
             const rows = document.querySelectorAll('#entryTable tbody tr');
             const headerCells = document.querySelectorAll('#entryTable thead th');
+            const selectedEmployee = currentFilter.employeeName;
             
             let rowCount = 1;
             
@@ -1065,6 +1171,12 @@
                 const area = row.querySelector('.area-input').value;
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
+                
+                // Filter berdasarkan nama karyawan jika dipilih
+                if (selectedEmployee !== 'all' && name !== selectedEmployee) {
+                    return;
+                }
+                
                 const shiftInputs = row.querySelectorAll('.shift-input');
                 
                 shiftInputs.forEach((input, dayIndex) => {
@@ -1261,23 +1373,27 @@
             if (savedDateRange) {
                 document.getElementById('startDate').value = savedDateRange.startDate;
                 document.getElementById('endDate').value = savedDateRange.endDate;
-                applyDateFilter();
+                currentFilter.startDate = new Date(savedDateRange.startDate);
+                currentFilter.endDate = new Date(savedDateRange.endDate);
             }
             
             if (savedAbsensiData) {
                 absensiData = savedAbsensiData;
-                updateEntryTable();
             }
             
             if (savedRemarksData) {
                 remarksData = savedRemarksData;
             }
             
+            applyDateFilter();
             generateOutputTable();
             generateOvertimeTable();
             
             // Update dropdown nama karyawan
             updateEmployeeDropdown();
+            
+            // Tampilkan informasi filter
+            updateFilterInfo();
         }
 
         // Fungsi untuk export ke Excel
@@ -1295,11 +1411,6 @@
             
             // Simpan file
             XLSX.writeFile(wb, "Data_Absensi.xlsx");
-        });
-
-        // Event listener untuk tombol Terapkan Filter
-        document.getElementById('applyFilter').addEventListener('click', function() {
-            applyDateFilter();
         });
 
         // Event listener untuk tombol Save
