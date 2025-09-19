@@ -14,13 +14,19 @@
             --accent-color: #7b89c9;
             --highlight-color: #a6b1e8;
             --text-color: #e4e8f0;
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 70px;
         }
 
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: margin-left 0.3s;
         }
 
+        /* Header Styles */
         .futuristic-header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: var(--text-color);
@@ -29,6 +35,8 @@
             border-bottom: 2px solid var(--accent-color);
             position: relative;
             overflow: hidden;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s;
         }
 
         .futuristic-header::before {
@@ -62,14 +70,129 @@
             margin-top: 5px;
         }
 
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            transition: width 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .sidebar-menu span {
+            display: none;
+        }
+
+        .sidebar.collapsed .sidebar-menu i {
+            margin-right: 0;
+        }
+
+        .submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.show {
+            max-height: 500px;
+        }
+
+        .submenu a {
+            padding-left: 45px;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s;
+            padding: 20px;
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        /* Filter Section */
         .filter-section {
             background-color: white;
             padding: 15px;
-            border-radius: 0 0 8px 8px;
+            border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
 
+        /* Tab Styles */
         .nav-tabs {
             background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
             border-radius: 5px;
@@ -107,32 +230,7 @@
             color: white;
         }
 
-        .form-control {
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 0.25rem rgba(123, 137, 201, 0.25);
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .tab-content {
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            min-height: 300px;
-        }
-
+        /* Table Styles */
         .table-container {
             overflow-x: auto;
             width: 100%;
@@ -185,14 +283,14 @@
             background-color: #f8f9fa;
         }
 
-        /* Warna yang lebih jelas untuk setiap shift - DITUKAR untuk Cuti dan Off */
+        /* Warna yang lebih jelas untuk setiap shift */
         .shift-1 { background-color: #4CAF50; color: white; } /* Pagi - Hijau */
         .shift-2 { background-color: #FFC107; color: black; } /* Siang - Kuning */
         .shift-3 { background-color: #2196F3; color: white; } /* Malam - Biru */
         .shift-11 { background-color: #8BC34A; color: white; } /* Pjk Pagi - Hijau muda */
         .shift-22 { background-color: #FF9800; color: white; } /* Pjk Siang - Jingga */
-        .shift-C { background-color: #9E9E9E; color: white; } /* Cuti - Abu-abu (DITUKAR) */
-        .shift-O { background-color: #F44336; color: white; } /* Off - Merah (DITUKAR) */
+        .shift-C { background-color: #9E9E9E; color: white; } /* Cuti - Abu-abu */
+        .shift-O { background-color: #F44336; color: white; } /* Off - Merah */
 
         .legend {
             display: flex;
@@ -217,21 +315,16 @@
             border-radius: 3px;
         }
 
-        /* Styling untuk Tab 3 */
-        .overtime-table input {
-            width: 100%;
-            padding: 4px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 0.8rem;
+        /* Tab Content */
+        .tab-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
         }
 
-        .overtime-table th {
-            font-size: 0.75rem;
-            white-space: nowrap;
-            padding: 4px 3px;
-        }
-
+        /* Button Styles */
         .btn-delete {
             background-color: #dc3545;
             color: white;
@@ -261,21 +354,7 @@
             background-color: #218838;
         }
 
-        .remarks-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .remarks-text {
-            flex-grow: 1;
-            text-align: left;
-            padding: 4px;
-            min-height: 25px;
-            font-size: 0.8rem;
-        }
-
-        /* Style untuk collapsible sections */
+        /* Collapsible Sections */
         .collapsible {
             background-color: #f8f9fa;
             color: #444;
@@ -319,75 +398,77 @@
             content: "\2212"; /* Minus sign */
         }
 
-        /* Style untuk input time */
-        input[type="time"] {
-            font-size: 0.8rem;
-            padding: 3px;
-        }
-
-        /* Style untuk pengaturan header */
-        .header-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .header-control-group {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .header-control-label {
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .header-control-input {
-            width: 60px;
-            padding: 4px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            font-size: 0.8rem;
-        }
-
-        /* Custom scrollbar untuk tabel */
-        .table-container::-webkit-scrollbar {
-            height: 12px;
-            width: 12px;
-        }
-
-        .table-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 6px;
-        }
-
-        .table-container::-webkit-scrollbar-thumb {
-            background: #a6b1e8;
-            border-radius: 6px;
-        }
-
-        .table-container::-webkit-scrollbar-thumb:hover {
-            background: #7b89c9;
-        }
-        
-        /* Style untuk input read-only */
-        .read-only-input {
-            background-color: #f8f9fa;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        
-        .read-only-input:focus {
-            background-color: white;
-            border: 1px solid #ced4da;
-            outline: none;
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+            
+            .sidebar-header h3, .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: var(--sidebar-collapsed-width);
+            }
+            
+            .futuristic-header {
+                margin-left: var(--sidebar-collapsed-width);
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu Absensi</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#" class="active" data-tab="entry">
+                    <i class="fas fa-pen-to-square"></i>
+                    <span>Entry Absensi</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-tab="output">
+                    <i class="fas fa-file-export"></i>
+                    <span>Output Absen</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-tab="overtime">
+                    <i class="fas fa-calculator"></i>
+                    <span>Perhitungan Lembur</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="submenu-toggle" data-submenu="general-menu">
+                    <i class="fas fa-folder"></i>
+                    <span>General</span>
+                    <i class="fas fa-chevron-down ml-auto"></i>
+                </a>
+                <ul class="submenu" id="general-menu">
+                    <li>
+                        <a href="#" data-tab="absen-tabel">
+                            <i class="fas fa-table"></i>
+                            <span>Absen Tabel</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Header -->
     <header class="futuristic-header">
         <div class="container">
             <h1 class="header-title text-center">Sistem Absensi Karyawan</h1>
@@ -395,193 +476,205 @@
         </div>
     </header>
 
-    <div class="container mt-4">
-        <div class="filter-section">
-            <div class="row">
-                <div class="col-md-4 mb-2">
-                    <label for="dateRange" class="form-label">Range Tanggal</label>
-                    <div class="input-group">
-                        <input type="date" class="form-control" id="startDate">
-                        <span class="input-group-text">s/d</span>
-                        <input type="date" class="form-control" id="endDate">
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container mt-4">
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label for="dateRange" class="form-label">Range Tanggal</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="startDate">
+                            <span class="input-group-text">s/d</span>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label for="employeeName" class="form-label">Nama Karyawan</label>
+                        <select class="form-select" id="employeeName">
+                            <option value="all">Select All</option>
+                            <!-- Opsi akan diisi oleh JavaScript -->
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end mb-2">
+                        <button class="btn btn-futuristic me-2" id="applyFilter">
+                            <i class="fas fa-filter me-1"></i> Terapkan Filter
+                        </button>
+                        <button class="btn btn-futuristic" id="exportExcel">
+                            <i class="fas fa-file-excel me-1"></i> Export Excel
+                        </button>
                     </div>
                 </div>
-                <div class="col-md-4 mb-2">
-                    <label for="employeeName" class="form-label">Nama Karyawan</label>
-                    <select class="form-select" id="employeeName">
-                        <option value="all">Select All</option>
-                        <!-- Opsi akan diisi oleh JavaScript -->
-                    </select>
-                </div>
-                <div class="col-md-4 d-flex align-items-end mb-2">
-                    <button class="btn btn-futuristic me-2" id="applyFilter">
-                        <i class="fas fa-filter me-1"></i> Terapkan Filter
-                    </button>
-                </div>
             </div>
-        </div>
 
-        <ul class="nav nav-tabs" id="absensiTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry" type="button" role="tab" aria-controls="entry" aria-selected="true">
-                    <i class="fas fa-pen-to-square me-1"></i> Entry
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="output-tab" data-bs-toggle="tab" data-bs-target="#output" type="button" role="tab" aria-controls="output" aria-selected="false">
-                    <i class="fas fa-file-export me-1"></i> Out Put Absen
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overtime-tab" data-bs-toggle="tab" data-bs-target="#overtime" type="button" role="tab" aria-controls="overtime" aria-selected="false">
-                    <i class="fas fa-calculator me-1"></i> Over Time Calculation
-                </button>
-            </li>
-            <div class="ms-auto d-flex align-items-center">
-                <button class="btn btn-futuristic me-2" id="saveData">
-                    <i class="fas fa-save me-1"></i> Save
-                </button>
-                <button class="btn btn-futuristic" id="exportExcel">
-                    <i class="fas fa-file-excel me-1"></i> Export Excel
-                </button>
-            </div>
-        </ul>
+            <!-- Tab Content -->
+            <div class="tab-content" id="absensiTabContent">
+                <!-- Entry Tab -->
+                <div class="tab-pane fade show active" id="entry" role="tabpanel">
+                    <button type="button" class="collapsible">Form Entry Absensi</button>
+                    <div class="collapsible-content">
+                        <p>Masukkan kode shift (1, 2, 3, 11, 22, C, O) untuk mengisi sel dan melihat warna sesuai jenis shift.</p>
 
-        <div class="tab-content" id="absensiTabContent">
-            <div class="tab-pane fade show active" id="entry" role="tabpanel" aria-labelledby="entry-tab">
-                <button type="button" class="collapsible">Form Entry Absensi</button>
-                <div class="collapsible-content">
-                    <p>Masukkan kode shift (1, 2, 3, 11, 22, C, O) untuk mengisi sel dan melihat warna sesuai jenis shift.</p>
+                        <div class="legend">
+                            <div class="legend-item shift-1">
+                                <div class="legend-color" style="background-color: #4CAF50;"></div>
+                                <span>Pagi (1)</span>
+                            </div>
+                            <div class="legend-item shift-2">
+                                <div class="legend-color" style="background-color: #FFC107;"></div>
+                                <span>Siang (2)</span>
+                            </div>
+                            <div class="legend-item shift-3">
+                                <div class="legend-color" style="background-color: #2196F3;"></div>
+                                <span>Malam (3)</span>
+                            </div>
+                            <div class="legend-item shift-11">
+                                <div class="legend-color" style="background-color: #8BC34A;"></div>
+                                <span>Pjk Pagi (11)</span>
+                            </div>
+                            <div class="legend-item shift-22">
+                                <div class="legend-color" style="background-color: #FF9800;"></div>
+                                <span>Pjk Siang (22)</span>
+                            </div>
+                            <div class="legend-item shift-C">
+                                <div class="legend-color" style="background-color: #9E9E9E;"></div>
+                                <span>Cuti (C)</span>
+                            </div>
+                            <div class="legend-item shift-O">
+                                <div class="legend-color" style="background-color: #F44336;"></div>
+                                <span>Off (O)</span>
+                            </div>
+                        </div>
 
-                    <div class="legend">
-                        <div class="legend-item shift-1">
-                            <div class="legend-color" style="background-color: #4CAF50;"></div>
-                            <span>Pagi (1)</span>
-                        </div>
-                        <div class="legend-item shift-2">
-                            <div class="legend-color" style="background-color: #FFC107;"></div>
-                            <span>Siang (2)</span>
-                        </div>
-                        <div class="legend-item shift-3">
-                            <div class="legend-color" style="background-color: #2196F3;"></div>
-                            <span>Malam (3)</span>
-                        </div>
-                        <div class="legend-item shift-11">
-                            <div class="legend-color" style="background-color: #8BC34A;"></div>
-                            <span>Pjk Pagi (11)</span>
-                        </div>
-                        <div class="legend-item shift-22">
-                            <div class="legend-color" style="background-color: #FF9800;"></div>
-                            <span>Pjk Siang (22)</span>
-                        </div>
-                        <div class="legend-item shift-C">
-                            <div class="legend-color" style="background-color: #9E9E9E;"></div>
-                            <span>Cuti (C)</span>
-                        </div>
-                        <div class="legend-item shift-O">
-                            <div class="legend-color" style="background-color: #F44336;"></div>
-                            <span>Off (O)</span>
+                        <div class="header-controls">
+                            <div class="header-control-group">
+                                <span class="header-control-label">Lebar Header:</span>
+                                <input type="number" id="headerWidth" class="header-control-input" placeholder="px" min="60" max="150" value="90">
+                            </div>
+                            <div class="header-control-group">
+                                <span class="header-control-label">Tinggi Header:</span>
+                                <input type="number" id="headerHeight" class="header-control-input" placeholder="px" min="30" max="60" value="35">
+                            </div>
+                            <button class="btn btn-futuristic" id="applyHeaderSize">
+                                <i class="fas fa-check me-1"></i> Terapkan
+                            </button>
                         </div>
                     </div>
 
-                    <div class="header-controls">
-                        <div class="header-control-group">
-                            <span class="header-control-label">Lebar Header:</span>
-                            <input type="number" id="headerWidth" class="header-control-input" placeholder="px" min="60" max="150" value="90">
-                        </div>
-                        <div class="header-control-group">
-                            <span class="header-control-label">Tinggi Header:</span>
-                            <input type="number" id="headerHeight" class="header-control-input" placeholder="px" min="30" max="60" value="35">
-                        </div>
-                        <button class="btn btn-futuristic" id="applyHeaderSize">
-                            <i class="fas fa-check me-1"></i> Terapkan
+                    <div class="table-container">
+                        <table id="entryTable">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <!-- Kolom tanggal akan diisi oleh JavaScript -->
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-futuristic" id="addRow">
+                            <i class="fas fa-plus me-1"></i> Add Row
+                        </button>
+                        <button class="btn btn-futuristic" id="saveData">
+                            <i class="fas fa-save me-1"></i> Save
                         </button>
                     </div>
                 </div>
 
-                <div class="table-container">
-                    <table id="entryTable">
-                        <thead>
-                            <tr>
-                                <th>Area</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <!-- Kolom tanggal akan diisi oleh JavaScript -->
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
+                <!-- Output Tab -->
+                <div class="tab-pane fade" id="output" role="tabpanel">
+                    <button type="button" class="collapsible">Output Data Absensi</button>
+                    <div class="collapsible-content">
+                        <p>Data absensi yang telah diinput akan muncul di sini dengan shift check in/out yang sesuai.</p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="outputTable">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Shift Check In</th>
+                                    <th>Shift Check Out</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-futuristic" id="addRow">
-                        <i class="fas fa-plus me-1"></i> Add Row
-                    </button>
-                </div>
-            </div>
+                <!-- Overtime Tab -->
+                <div class="tab-pane fade" id="overtime" role="tabpanel">
+                    <button type="button" class="collapsible">Perhitungan Lembur</button>
+                    <div class="collapsible-content">
+                        <p>Di sini Anda dapat mengelola perhitungan lembur karyawan.</p>
+                    </div>
 
-            <div class="tab-pane fade" id="output" role="tabpanel" aria-labelledby="output-tab">
-                <button type="button" class="collapsible">Output Data Absensi</button>
-                <div class="collapsible-content">
-                    <p>Data absensi yang telah diinput akan muncul di sini dengan shift check in/out yang sesuai.</p>
-                </div>
-
-                <div class="table-responsive">
-                    <table id="outputTable">
-                        <thead>
-                            <tr>
-                                <th>Area</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Date</th>
-                                <th>Shift</th>
-                                <th>Shift Check In</th>
-                                <th>Shift Check Out</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="overtime" role="tabpanel" aria-labelledby="overtime-tab">
-                <button type="button" class="collapsible">Perhitungan Lembur</button>
-                <div class="collapsible-content">
-                    <p>Di sini Anda dapat mengelola perhitungan lembur karyawan.</p>
+                    <div class="table-responsive">
+                        <table class="overtime-table" id="overtimeTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Area</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Shift Check In</th>
+                                    <th>Shift Check Out</th>
+                                    <th>WT/Normal</th>
+                                    <th>Actual Check In</th>
+                                    <th>Actual Check Out</th>
+                                    <th>Over Time</th>
+                                    <th>Cek RMC</th>
+                                    <th>RKP PIC</th>
+                                    <th>Rmc - Shift Check Out</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overtimeTableBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="overtime-table" id="overtimeTable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Area</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Date</th>
-                                <th>Shift</th>
-                                <th>Shift Check In</th>
-                                <th>Shift Check Out</th>
-                                <th>WT/Normal</th>
-                                <th>Actual Check In</th>
-                                <th>Actual Check Out</th>
-                                <th>Over Time</th>
-                                <th>Cek RMC</th>
-                                <th>RKP PIC</th>
-                                <th>Rmc - Shift Check Out</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody id="overtimeTableBody">
-                            <!-- Data akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
+                <!-- Absen Tabel Tab -->
+                <div class="tab-pane fade" id="absen-tabel" role="tabpanel">
+                    <button type="button" class="collapsible">Data Absen Tabel</button>
+                    <div class="collapsible-content">
+                        <p>Data absensi yang telah disimpan. Data dapat diedit tetapi tidak dapat dihapus.</p>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="absenTabelTable">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <!-- Kolom tanggal akan diisi oleh JavaScript -->
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -622,21 +715,21 @@
 
         // Variabel global untuk menyimpan data
         let absensiData = [];
+        let absenTabelData = [];
         let dateRange = [];
-        let remarksData = {}; // Menyimpan data remarks
-        let overtimeData = {}; // Menyimpan data overtime
+        let remarksData = {};
+        let overtimeData = {};
+        let currentTab = "entry";
 
-        // Fungsi untuk memformat tanggal sebagai string (dd/mm/yyyy)
+        // Fungsi untuk memformat tanggal
         function formatDate(date) {
             return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         }
 
-        // Fungsi untuk memformat tanggal sebagai string untuk kunci shifts (dd/mm/yyyy)
         function formatDateForShift(date) {
             return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         }
 
-        // Fungsi untuk memformat tanggal sebagai string untuk tampilan header (Hari dd/mm/yyyy)
         function formatDateForHeader(date) {
             const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const dayName = dayNames[date.getDay()];
@@ -648,10 +741,8 @@
             const value = input.value.toUpperCase();
             const td = input.parentElement;
 
-            // Hapus semua kelas shift
             td.classList.remove("shift-1", "shift-2", "shift-3", "shift-11", "shift-22", "shift-C", "shift-O");
 
-            // Tambahkan kelas sesuai nilai shift
             if (value === "1") td.classList.add("shift-1");
             else if (value === "2") td.classList.add("shift-2");
             else if (value === "3") td.classList.add("shift-3");
@@ -660,13 +751,8 @@
             else if (value === "C") td.classList.add("shift-C");
             else if (value === "O") td.classList.add("shift-O");
 
-            // Simpan data
             saveDataToLocalStorage();
-
-            // Update output table
             generateOutputTable();
-
-            // Update overtime table
             generateOvertimeTable();
         }
 
@@ -676,35 +762,29 @@
             input.focus();
             input.select();
             
-            // Kembalikan ke read-only ketika kehilangan fokus
             input.addEventListener('blur', function() {
                 this.readOnly = true;
-                
-                // Simpan data setelah mengedit
                 saveDataToLocalStorage();
-                
-                // Update dropdown nama karyawan
                 updateEmployeeDropdown();
             }, { once: true });
         }
 
-        // Fungsi untuk menghapus baris
+        // Fungsi untuk menghapus baris (hanya di tab entry)
         function deleteRow(button) {
+            if (currentTab === "absen-tabel") return; // Tidak boleh hapus di tab absen-tabel
+            
             const row = button.closest('tr');
             const name = row.querySelector('.name-input').value;
             const position = row.querySelector('.position-input').value;
             
-            // Hapus dari data absensi
             absensiData = absensiData.filter(emp => !(emp.name === name && emp.position === position));
             
-            // Hapus dari data remarks
             for (const key in remarksData) {
                 if (key.includes(`${name}-${position}`)) {
                     delete remarksData[key];
                 }
             }
             
-            // Hapus dari data overtime
             for (const key in overtimeData) {
                 if (key.includes(`${name}-${position}`)) {
                     delete overtimeData[key];
@@ -712,17 +792,9 @@
             }
             
             row.remove();
-            
-            // Simpan data setelah menghapus baris
             saveDataToLocalStorage();
-            
-            // Update output table
             generateOutputTable();
-            
-            // Update overtime table
             generateOvertimeTable();
-            
-            // Update dropdown nama karyawan
             updateEmployeeDropdown();
         }
 
@@ -747,7 +819,6 @@
             const field = input.classList[0].replace(/-/g, '');
             overtimeData[key][field] = input.value;
             
-            // Simpan ke localStorage
             localStorage.setItem('overtimeData', JSON.stringify(overtimeData));
         }
 
@@ -759,19 +830,16 @@
             const overTimeInput = row.querySelector('.over-time');
             
             if (shiftCheckOut && actualCheckOut) {
-                // Parse waktu
                 const [shiftHours, shiftMinutes] = shiftCheckOut.split(':').map(Number);
                 const [actualHours, actualMinutes] = actualCheckOut.split(':').map(Number);
                 
-                // Hitung selisih dalam menit
                 const shiftTotalMinutes = shiftHours * 60 + shiftMinutes;
                 const actualTotalMinutes = actualHours * 60 + actualMinutes;
                 
                 let diffMinutes = actualTotalMinutes - shiftTotalMinutes;
                 
-                // Handle kasus dimana actual check out melewati tengah malam
                 if (diffMinutes < 0) {
-                    diffMinutes += 24 * 60; // Tambah 24 jam
+                    diffMinutes += 24 * 60;
                 }
                 
                 if (diffMinutes > 0) {
@@ -783,7 +851,6 @@
                 }
             }
             
-            // Simpan data
             saveOvertimeData(key, overTimeInput);
         }
 
@@ -795,19 +862,16 @@
             const rmcShiftOutInput = row.querySelector('.rmc-shift-out');
             
             if (shiftCheckOut && cekRmc) {
-                // Parse waktu
                 const [shiftHours, shiftMinutes] = shiftCheckOut.split(':').map(Number);
                 const [rmcHours, rmcMinutes] = cekRmc.split(':').map(Number);
                 
-                // Hitung selisih dalam menit
                 const shiftTotalMinutes = shiftHours * 60 + shiftMinutes;
                 const rmcTotalMinutes = rmcHours * 60 + rmcMinutes;
                 
                 let diffMinutes = rmcTotalMinutes - shiftTotalMinutes;
                 
-                // Handle kasus dimana cek rmc melewati tengah malam
                 if (diffMinutes < 0) {
-                    diffMinutes += 24 * 60; // Tambah 24 jam
+                    diffMinutes += 24 * 60;
                 }
                 
                 if (diffMinutes > 0) {
@@ -819,11 +883,10 @@
                 }
             }
             
-            // Simpan data
             saveOvertimeData(key, rmcShiftOutInput);
         }
 
-        // Set tanggal default untuk filter
+        // Inisialisasi aplikasi
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -831,45 +894,35 @@
             document.getElementById('startDate').valueAsDate = firstDayOfMonth;
             document.getElementById('endDate').valueAsDate = today;
             
-            // Inisialisasi collapsible sections
             initCollapsible();
-            
-            // Muat data dari localStorage
             loadDataFromLocalStorage();
-            
-            // Terapkan filter tanggal
             applyDateFilter();
-            
-            // Update dropdown nama karyawan
             updateEmployeeDropdown();
+            initSidebar();
             
-            // Tambahkan event listener untuk mengatur ukuran header
+            // Event listeners
             document.getElementById('applyHeaderSize').addEventListener('click', applyHeaderSize);
-            
-            // Tambahkan event listener untuk tombol filter
             document.getElementById('applyFilter').addEventListener('click', applyFilterHandler);
-            
-            // Tambahkan event listener untuk tombol Save dan Export
             document.getElementById('saveData').addEventListener('click', function() {
                 saveDataToLocalStorage();
                 alert('Data berhasil disimpan!');
             });
             
             document.getElementById('exportExcel').addEventListener('click', function() {
-                // Export data dari tab yang aktif
-                const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
-                
                 let table, filename;
                 
-                if (activeTab === '#entry') {
+                if (currentTab === 'entry') {
                     table = document.getElementById('entryTable');
                     filename = "Data_Entry_Absensi.xlsx";
-                } else if (activeTab === '#output') {
+                } else if (currentTab === 'output') {
                     table = document.getElementById('outputTable');
                     filename = "Data_Output_Absensi.xlsx";
-                } else if (activeTab === '#overtime') {
+                } else if (currentTab === 'overtime') {
                     table = document.getElementById('overtimeTable');
                     filename = "Data_Overtime_Absensi.xlsx";
+                } else if (currentTab === 'absen-tabel') {
+                    table = document.getElementById('absenTabelTable');
+                    filename = "Data_Absen_Tabel.xlsx";
                 }
                 
                 if (table) {
@@ -880,7 +933,6 @@
                 }
             });
             
-            // Tambahkan event listener untuk tombol Add Row
             document.getElementById('addRow').addEventListener('click', function() {
                 const tbody = document.querySelector('#entryTable tbody');
                 const newRow = document.createElement('tr');
@@ -900,10 +952,7 @@
                 newRow.innerHTML = rowHTML;
                 tbody.appendChild(newRow);
                 
-                // Inisialisasi warna shift untuk baris baru
                 initializeShiftColors();
-                
-                // Tambahkan event listener untuk navigasi dengan panah
                 addArrowNavigation();
             });
         });
@@ -912,9 +961,7 @@
         function applyFilterHandler() {
             const startDate = new Date(document.getElementById('startDate').value);
             const endDate = new Date(document.getElementById('endDate').value);
-            const employeeName = document.getElementById('employeeName').value;
             
-            // Validasi tanggal
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
                 alert('Tanggal tidak valid. Silakan pilih tanggal yang benar.');
                 return;
@@ -958,7 +1005,6 @@
                 }
             });
             
-            // Simpan pengaturan ke localStorage
             localStorage.setItem('headerWidth', width);
             localStorage.setItem('headerHeight', height);
         }
@@ -977,7 +1023,6 @@
                     }
                 });
                 
-                // Buka section pertama secara default
                 if (i === 0) {
                     coll[i].classList.add("active");
                     const content = coll[i].nextElementSibling;
@@ -986,30 +1031,84 @@
             }
         }
 
+        // Fungsi untuk inisialisasi sidebar
+        function initSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const menuItems = document.querySelectorAll('.sidebar-menu a');
+            const submenuToggles = document.querySelectorAll('.submenu-toggle');
+            
+            // Toggle sidebar
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+            
+            // Menu item click
+            menuItems.forEach(item => {
+                if (item.classList.contains('submenu-toggle')) return;
+                
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active menu
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show the corresponding tab
+                    const tabName = this.getAttribute('data-tab');
+                    currentTab = tabName;
+                    
+                    document.querySelectorAll('.tab-pane').forEach(tab => {
+                        tab.classList.remove('show', 'active');
+                    });
+                    
+                    document.getElementById(tabName).classList.add('show', 'active');
+                    
+                    // Jika tab absen-tabel, generate tabel
+                    if (tabName === 'absen-tabel') {
+                        generateAbsenTabelTable();
+                    }
+                });
+            });
+            
+            // Submenu toggle
+            submenuToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenuId = this.getAttribute('data-submenu');
+                    const submenu = document.getElementById(submenuId);
+                    
+                    submenu.classList.toggle('show');
+                    
+                    // Rotate arrow
+                    const arrow = this.querySelector('.fa-chevron-down');
+                    arrow.classList.toggle('fa-rotate-180');
+                });
+            });
+        }
+
         // Fungsi untuk update dropdown nama karyawan
         function updateEmployeeDropdown() {
             const employeeDropdown = document.getElementById('employeeName');
             const currentValue = employeeDropdown.value;
             
-            // Hapus semua opsi kecuali "Select All"
             while (employeeDropdown.options.length > 1) {
                 employeeDropdown.remove(1);
             }
             
-            // Dapatkan daftar nama unik dari data absensi
             const uniqueNames = new Set();
             absensiData.forEach(employee => {
                 if (employee.name) uniqueNames.add(employee.name);
             });
             
-            // Jika tidak ada data, gunakan data awal
             if (uniqueNames.size === 0) {
                 initialEmployees.forEach(employee => {
                     uniqueNames.add(employee.name);
                 });
             }
             
-            // Tambahkan opsi untuk setiap nama
             uniqueNames.forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
@@ -1017,7 +1116,6 @@
                 employeeDropdown.appendChild(option);
             });
             
-            // Kembalikan nilai yang dipilih sebelumnya jika masih ada
             if (currentValue !== 'all') {
                 const optionExists = Array.from(employeeDropdown.options).some(opt => opt.value === currentValue);
                 if (optionExists) {
@@ -1031,23 +1129,16 @@
             const startDate = document.getElementById('startDate').valueAsDate;
             const endDate = document.getElementById('endDate').valueAsDate;
             
-            // Reset dateRange
             dateRange = [];
             
-            // Generate tanggal antara startDate dan endDate
             let currentDate = new Date(startDate);
             while (currentDate <= endDate) {
                 dateRange.push(new Date(currentDate));
                 currentDate.setDate(currentDate.getDate() + 1);
             }
             
-            // Update tabel entry
             updateEntryTable();
-            
-            // Update output table
             generateOutputTable();
-            
-            // Update overtime table
             generateOvertimeTable();
         }
 
@@ -1057,7 +1148,6 @@
             const thead = entryTable.querySelector('thead tr');
             const tbody = entryTable.querySelector('tbody');
             
-            // Update header
             let headerHTML = '<th>Area</th><th>Name</th><th>Position</th>';
             dateRange.forEach(date => {
                 headerHTML += `<th>${formatDateForHeader(date)}</th>`;
@@ -1065,25 +1155,17 @@
             headerHTML += '<th>Action</th>';
             thead.innerHTML = headerHTML;
             
-            // Update body - jangan hapus data yang sudah ada, hanya update kolom tanggal
             updateEntryTableBody();
-            
-            // Inisialisasi warna shift
             initializeShiftColors();
-            
-            // Terapkan pengaturan header yang disimpan
             loadHeaderSettings();
-            
-            // Tambahkan event listener untuk navigasi dengan panah
             addArrowNavigation();
         }
 
-        // Fungsi untuk mengupdate body tabel entry tanpa menghapus data yang ada
+        // Fungsi untuk mengupdate body tabel entry
         function updateEntryTableBody() {
             const tbody = document.querySelector('#entryTable tbody');
             tbody.innerHTML = '';
             
-            // Gunakan data yang disimpan atau data awal
             const employeesToShow = absensiData.length > 0 ? absensiData : initialEmployees;
             
             employeesToShow.forEach(employee => {
@@ -1105,6 +1187,55 @@
                 row.innerHTML = rowHTML;
                 tbody.appendChild(row);
             });
+        }
+
+        // Fungsi untuk generate tabel absen-tabel
+        function generateAbsenTabelTable() {
+            const absenTabelTable = document.querySelector('#absenTabelTable');
+            const thead = absenTabelTable.querySelector('thead tr');
+            const tbody = absenTabelTable.querySelector('tbody');
+            
+            let headerHTML = '<th>Area</th><th>Name</th><th>Position</th>';
+            dateRange.forEach(date => {
+                headerHTML += `<th>${formatDateForHeader(date)}</th>`;
+            });
+            headerHTML += '<th>Action</th>';
+            thead.innerHTML = headerHTML;
+            
+            tbody.innerHTML = '';
+            
+            // Gabungkan data dari absensiData dan absenTabelData
+            const allData = [...absenTabelData, ...absensiData];
+            
+            if (allData.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="${dateRange.length + 4}" class="text-center">Tidak ada data absensi</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            allData.forEach(employee => {
+                const row = document.createElement('tr');
+                let rowHTML = `
+                    <td><input type="text" value="${employee.area}" class="area-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    <td><input type="text" value="${employee.name}" class="name-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                    <td><input type="text" value="${employee.position}" class="position-input read-only-input" readonly ondblclick="makeEditable(this)"></td>
+                `;
+                
+                dateRange.forEach(date => {
+                    const dateStr = formatDateForShift(date);
+                    const shiftValue = employee.shifts && employee.shifts[dateStr] ? employee.shifts[dateStr] : '';
+                    rowHTML += `<td><input type="text" value="${shiftValue}" class="shift-input" onchange="updateShiftColor(this)"></td>`;
+                });
+                
+                // Untuk tab absen-tabel, tombol delete tidak ditampilkan
+                rowHTML += '<td><button class="btn-edit" onclick="alert(\'Data di tab Absen Tabel tidak dapat dihapus\')"><i class="fas fa-lock"></i></button></td>';
+                
+                row.innerHTML = rowHTML;
+                tbody.appendChild(row);
+            });
+            
+            initializeShiftColors();
         }
 
         // Fungsi untuk memuat pengaturan header
@@ -1129,13 +1260,13 @@
             const inputs = document.querySelectorAll('#entryTable input');
             inputs.forEach((input, index) => {
                 input.addEventListener('keydown', function(e) {
-                    if ([37, 38, 39, 40].includes(e.keyCode)) { // Panah kiri, atas, kanan, bawah
+                    if ([37, 38, 39, 40].includes(e.keyCode)) {
                         e.preventDefault();
                         
                         let nextIndex;
-                        if (e.keyCode === 37) { // Kiri
+                        if (e.keyCode === 37) {
                             nextIndex = index - 1;
-                        } else if (e.keyCode === 38) { // Atas
+                        } else if (e.keyCode === 38) {
                             const row = this.closest('tr');
                             const inputsInRow = row.querySelectorAll('input');
                             const currentColIndex = Array.from(inputsInRow).indexOf(this);
@@ -1144,9 +1275,9 @@
                                 const inputsInPrevRow = prevRow.querySelectorAll('input');
                                 nextIndex = index - inputsInRow.length + (currentColIndex - inputsInPrevRow.length);
                             }
-                        } else if (e.keyCode === 39) { // Kanan
+                        } else if (e.keyCode === 39) {
                             nextIndex = index + 1;
-                        } else if (e.keyCode === 40) { // Bawah
+                        } else if (e.keyCode === 40) {
                             const row = this.closest('tr');
                             const inputsInRow = row.querySelectorAll('input');
                             const currentColIndex = Array.from(inputsInRow).indexOf(this);
@@ -1187,7 +1318,6 @@
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
                 
-                // Filter berdasarkan nama karyawan jika dipilih
                 if (selectedEmployee !== 'all' && name !== selectedEmployee) {
                     return;
                 }
@@ -1195,7 +1325,7 @@
                 const shiftInputs = row.querySelectorAll('.shift-input');
                 
                 shiftInputs.forEach((input, dayIndex) => {
-                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
+                    if (dayIndex < dateRange.length) {
                         const date = dateRange[dayIndex];
                         const dateText = formatDateForHeader(date);
                         const dateKey = formatDateForShift(date);
@@ -1204,7 +1334,6 @@
                             ? shiftMatrix[position][shiftCode] 
                             : { name: "", checkIn: "", checkOut: "", hours: "" };
                         
-                        // Buat key unik untuk remarks
                         const remarkKey = `${name}-${position}-${dateKey}`;
                         const remarkValue = remarksData[remarkKey] || '';
                         
@@ -1248,7 +1377,6 @@
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
                 
-                // Filter berdasarkan nama karyawan jika dipilih
                 if (selectedEmployee !== 'all' && name !== selectedEmployee) {
                     return;
                 }
@@ -1256,7 +1384,7 @@
                 const shiftInputs = row.querySelectorAll('.shift-input');
                 
                 shiftInputs.forEach((input, dayIndex) => {
-                    if (dayIndex < dateRange.length) { // Hanya untuk kolom tanggal
+                    if (dayIndex < dateRange.length) {
                         const date = dateRange[dayIndex];
                         const dateText = formatDateForHeader(date);
                         const dateKey = formatDateForShift(date);
@@ -1265,7 +1393,6 @@
                             ? shiftMatrix[position][shiftCode] 
                             : { name: "", checkIn: "", checkOut: "", hours: "" };
                         
-                        // Buat key unik untuk data overtime
                         const overtimeKey = `${name}-${position}-${dateKey}`;
                         const savedOvertimeData = overtimeData[overtimeKey] || {};
                         
@@ -1309,7 +1436,7 @@
                 
                 const shiftInputs = row.querySelectorAll('.shift-input');
                 shiftInputs.forEach((input, index) => {
-                    if (index < dateRange.length) { // Hanya untuk kolom tanggal
+                    if (index < dateRange.length) {
                         const date = dateRange[index];
                         const dateKey = formatDateForShift(date);
                         shifts[dateKey] = input.value;
@@ -1320,6 +1447,7 @@
             });
             
             localStorage.setItem('absensiData', JSON.stringify(absensiData));
+            localStorage.setItem('absenTabelData', JSON.stringify(absenTabelData));
             localStorage.setItem('overtimeData', JSON.stringify(overtimeData));
             localStorage.setItem('remarksData', JSON.stringify(remarksData));
             localStorage.setItem('dateRange', JSON.stringify({
@@ -1327,13 +1455,13 @@
                 endDate: document.getElementById('endDate').value
             }));
             
-            // Update dropdown nama karyawan
             updateEmployeeDropdown();
         }
 
         // Fungsi untuk memuat data dari localStorage
         function loadDataFromLocalStorage() {
             const savedAbsensiData = JSON.parse(localStorage.getItem('absensiData'));
+            const savedAbsenTabelData = JSON.parse(localStorage.getItem('absenTabelData'));
             const savedOvertimeData = JSON.parse(localStorage.getItem('overtimeData'));
             const savedRemarksData = JSON.parse(localStorage.getItem('remarksData'));
             const savedDateRange = JSON.parse(localStorage.getItem('dateRange'));
@@ -1345,6 +1473,10 @@
             
             if (savedAbsensiData) {
                 absensiData = savedAbsensiData;
+            }
+            
+            if (savedAbsenTabelData) {
+                absenTabelData = savedAbsenTabelData;
             }
             
             if (savedOvertimeData) {
