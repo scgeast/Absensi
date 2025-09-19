@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* CSS tetap sama seperti sebelumnya */
         :root {
             --primary-color: #2a2d43;
             --secondary-color: #4a5079;
@@ -1161,6 +1162,9 @@
                     tbody.appendChild(row);
                 });
             }
+            
+            // Pastikan untuk menginisialisasi warna shift setelah mengupdate tabel
+            initializeShiftColors();
         }
 
         // Fungsi untuk memuat pengaturan header
@@ -1238,7 +1242,7 @@
             const rows = document.querySelectorAll('#entryTable tbody tr');
             const selectedEmployee = currentFilter.employeeName;
             
-            rows.forEach((row, rowIndex) => {
+            rows.forEach((row, rowIndex) {
                 const area = row.querySelector('.area-input').value;
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
@@ -1266,7 +1270,7 @@
                         
                         const newRow = document.createElement('tr');
                         newRow.innerHTML = `
-                            <td>${area}</td>
+                            <td>${area</td>
                             <td>${name}</td>
                             <td>${position}</td>
                             <td>${dateText}</td>
@@ -1299,7 +1303,7 @@
             
             let rowCount = 1;
             
-            rows.forEach((row, rowIndex) => {
+            rows.forEach((row, rowIndex) {
                 const area = row.querySelector('.area-input').value;
                 const name = row.querySelector('.name-input').value;
                 const position = row.querySelector('.position-input').value;
@@ -1334,7 +1338,7 @@
                             <td>${dateText}</td>
                             <td>${shiftData.name}</td>
                             <td>${shiftData.checkIn}</td>
-                            <td>${shiftData.checkOut}</td>
+                            <td>${shiftData.checkOut</td>
                             <td>${shiftData.hours}</td>
                             <td><input type="time" class="actual-check-in" value="${savedOvertimeData.actualCheckIn || ''}" onchange="saveOvertimeData('${overtimeKey}', this)"></td>
                             <td><input type="time" class="actual-check-out" value="${savedOvertimeData.actualCheckOut || ''}" onchange="calculateOvertime(this, '${overtimeKey}')"></td>
@@ -1364,7 +1368,7 @@
                 const shifts = {};
                 
                 const shiftInputs = row.querySelectorAll('.shift-input');
-                shiftInputs.forEach((input, index) {
+                shiftInputs.forEach((input, index) => {
                     if (index < dateRange.length) { // Hanya untuk kolom tanggal
                         const date = dateRange[index];
                         const dateKey = formatDateForShift(date);
