@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* [Kode CSS yang sama seperti sebelumnya] */
         :root {
             --primary-color: #2a2d43;
             --secondary-color: #4a5079;
@@ -625,6 +626,7 @@
         let dateRange = [];
         let remarksData = {}; // Menyimpan data remarks
         let overtimeData = {}; // Menyimpan data overtime
+        let currentFilter = {}; // Menyimpan filter saat ini
 
         // Fungsi untuk memformat tanggal sebagai string (dd/mm/yyyy)
         function formatDate(date) {
@@ -856,19 +858,28 @@
             });
             
             document.getElementById('exportExcel').addEventListener('click', function() {
-                // Export data dari Tab 2 (Output)
-                const outputTable = document.getElementById('outputTable');
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.table_to_sheet(outputTable);
-                XLSX.utils.book_append_sheet(wb, ws, "Output Absensi");
+                // Export data dari tab yang aktif
+                const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
                 
-                // Export data dari Tab 3 (Overtime)
-                const overtimeTable = document.querySelector('.overtime-table');
-                const ws2 = XLSX.utils.table_to_sheet(overtimeTable);
-                XLSX.utils.book_append_sheet(wb, ws2, "Perhitungan Lembur");
+                let table, filename;
                 
-                // Simpan file
-                XLSX.writeFile(wb, "Data_Absensi.xlsx");
+                if (activeTab === '#entry') {
+                    table = document.getElementById('entryTable');
+                    filename = "Data_Entry_Absensi.xlsx";
+                } else if (activeTab === '#output') {
+                    table = document.getElementById('outputTable');
+                    filename = "Data_Output_Absensi.xlsx";
+                } else if (activeTab === '#overtime') {
+                    table = document.querySelector('.overtime-table');
+                    filename = "Data_Overtime_Absensi.xlsx";
+                }
+                
+                if (table) {
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.table_to_sheet(table);
+                    XLSX.utils.book_append_sheet(wb, ws, "Data Absensi");
+                    XLSX.writeFile(wb, filename);
+                }
             });
             
             // Tambahkan event listener untuk tombol Add Row
